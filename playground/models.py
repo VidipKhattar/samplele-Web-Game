@@ -1,26 +1,22 @@
 from django.db import models
 
 
-class SamplerSong(models.Model):
-    title = models.CharField(max_length=100)
-    artist = models.CharField(max_length=100)
-    artwork = models.URLField()
-    audio = models.URLField()
-    year = models.IntegerField()
+class SongPost(models.Model):
+    id = models.IntegerField(primary_key=True)
+    sampler_title = models.CharField(max_length=100)
+    sampled_title = models.CharField(max_length=100)
+    sampler_artist = models.CharField(max_length=100)
+    sampled_artist = models.CharField(max_length=100)
+    sampler_artwork = models.URLField()
+    sampled_artwork = models.URLField()
+    sampler_audio = models.URLField()
+    sampled_audio = models.URLField()
+    sampler_year = models.IntegerField()
+    sampled_year = models.IntegerField()
     clue_1 = models.TextField()
     clue_2 = models.TextField()
     clue_3 = models.TextField()
-
-    def __str__(self):
-        return self.title
-
-
-class SampledSong(models.Model):
-    title = models.CharField(max_length=100)
-    artist = models.CharField(max_length=100)
-    artwork = models.URLField()
-    audio = models.URLField()
-    year = models.IntegerField()
+    post_date = models.DateField()
 
     def __str__(self):
         return self.title
