@@ -54,6 +54,29 @@ function AdminPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if any required field is empty
+    const requiredFields = [
+      "sampler_title",
+      "sampled_title",
+      "sampler_artist",
+      "sampled_artist",
+      "sampler_artwork",
+      "sampled_artwork",
+      "sampler_audio",
+      "sampled_audio",
+      "sampler_year",
+      "sampled_year",
+      "post_date",
+    ];
+    const missingFields = requiredFields.filter((field) => !formData[field]);
+
+    if (missingFields.length > 0) {
+      // Display alert for missing fields
+      alert(`The following fields are required: ${missingFields.join(", ")}`);
+      return;
+    }
+
     try {
       // Post song details to backend
       const response = await axios.post(
@@ -77,6 +100,8 @@ function AdminPage() {
       });
     } catch (error) {
       console.error("Error adding song:", error);
+      // Display alert for error
+      alert("Failed to add song. Please try again later.");
     }
   };
 
