@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 
-const SearchBar = () => {
+const SearchBar = ({ onSearchQueryChange, onSearchResultsChange }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [audioSrc, setAudioSrc] = useState("");
@@ -18,10 +18,16 @@ const SearchBar = () => {
         `https://itunes.apple.com/search?term=${value}&entity=song&limit=5`
       );
 
+      console.log(response.data.results);
+
       const tracks = response.data.results.map((result) => ({
         name: result.trackName,
         artist: result.artistName,
         previewUrl: result.previewUrl,
+        artwork: result.artworkUrl100,
+        album: result.collectionName,
+        genre: result.primaryGenreName,
+        releaseDate: result.releaseDate,
       }));
 
       // Filter out duplicates
@@ -43,6 +49,7 @@ const SearchBar = () => {
     setQuery(`${song.name} - ${song.artist}`);
     console.log("Selected Track:", song);
     setAudioSrc(song.previewUrl);
+    onSearchResultsChange(song);
     setSuggestions([]);
   };
 
@@ -80,7 +87,7 @@ const SearchBar = () => {
           </svg>
         </button>
       )}
-      {audioSrc && <audio src={audioSrc} autoPlay controls={false}></audio>}
+      {audioSrc && <audio src={audioSrc} controls={false}></audio>}
       {query && suggestions.length > 0 && (
         <ul className="absolute top-full left-0 z-20 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg">
           {suggestions.map((song, index) => (
