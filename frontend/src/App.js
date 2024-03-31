@@ -1,7 +1,7 @@
 import "./App.css";
 import React from "react";
 import MainPage from "./pages/mainPage";
-import adminLogin from "./pages/adminLogin";
+import AdminLogin from "./pages/adminLogin";
 import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="admin" element={<adminLogin />} />
+        <Route path="admin" element={<AdminLogin />} />
         <Route path="easteregg" element={<div>HAHAHHAHAHAHA</div>} />
       </Routes>
     </BrowserRouter>
