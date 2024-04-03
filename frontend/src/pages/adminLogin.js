@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SearchBar from "../components/searchBar"; // Import the SearchBar component
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function AdminPage() {
   const [formData, setFormData] = useState({
@@ -18,6 +20,35 @@ function AdminPage() {
   });
   const [samplerSong, setSamplerSong] = useState({});
   const [sampledSong, setSampledSong] = useState({});
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [disabledDates, setDisabledDates] = useState([]);
+
+  useEffect(() => {
+    // Fetch disabled dates from API
+    axios
+      .get("http://127.0.0.1:8000/songposts/")
+      .then((response) => {
+        let disabledDates = [];
+        for (let i = 0; i < response.data.length; i++) {
+          disabledDates.push(new Date(response.data[i].post_date));
+        }
+        setDisabledDates(disabledDates);
+        // Assuming the response contains an array of date strings
+      })
+      .catch((error) => {
+        console.error("Error fetching disabled dates:", error);
+      });
+  }, []);
+
+  const filterDisabledDates = (date) => {
+    // Convert date objects to string format for comparison
+    const dateString = date.toDateString();
+    //console.log(dateString);
+    // Check if the date string matches any of the disabled date strings
+    return !disabledDates.some(
+      (disabledDate) => disabledDate.toDateString() === dateString
+    );
+  };
 
   // Callback function to update search results
   const handleSamplerSearchResultsChange = (results) => {
@@ -42,14 +73,6 @@ function AdminPage() {
       sampled_audio: results.previewUrl,
       sampled_year: results.releaseDate.substring(0, 4),
     }));
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    console.log(formData);
   };
 
   const handleSubmit = async (e) => {
@@ -78,6 +101,7 @@ function AdminPage() {
     }
 
     try {
+      console.log(formData);
       // Post song details to backend
       const response = await axios.post(
         "http://127.0.0.1:8000/songposts/",
@@ -98,10 +122,13 @@ function AdminPage() {
         sampled_year: "",
         post_date: "",
       });
+
+      alert("Song added successfully");
+      window.location.reload();
     } catch (error) {
       console.error("Error adding song:", error);
       // Display alert for error
-      alert("Failed to add song. Please try again later.");
+      alert(error + " date could be taken");
     }
   };
 
@@ -128,44 +155,67 @@ function AdminPage() {
               onSearchResultsChange={handleSampledSearchResultsChange}
             />
           </div>
-          <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-3xl shadow-lg ">
-            <ul className="font-bold text-xl t py-4">
+          <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-3xl shadow-lg text-center">
+            <ul className="font-bold text-xl py-4">
               <li>{samplerSong.name}</li>
               <li>{samplerSong.artist}</li>
               <li>{samplerSong.album}</li>
-              <li>
-                <img src={samplerSong.artwork} />
+              <li style={{ display: "flex", justifyContent: "center" }}>
+                <img
+                  src={samplerSong.artwork}
+                  style={{ maxWidth: "100%", maxHeight: "200px" }}
+                />
               </li>
-              <li>
+              <li style={{ display: "flex", justifyContent: "center" }}>
                 <audio src={samplerSong.previewUrl} controls={true} />
               </li>
               <li>{samplerSong.genre}</li>
-              <li>{samplerSong.releaseDate}</li>
+              <li>{new Date(samplerSong.releaseDate).toLocaleDateString()}</li>
             </ul>
           </div>
-          <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-3xl shadow-lg ">
-            <ul className="font-bold text-xl t py-4">
+
+          <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-3xl shadow-lg text-center">
+            <ul className="font-bold text-xl py-4">
               <li>{sampledSong.name}</li>
               <li>{sampledSong.artist}</li>
               <li>{sampledSong.album}</li>
-              <li>
-                <img src={sampledSong.artwork} />
+              <li style={{ display: "flex", justifyContent: "center" }}>
+                <img
+                  src={sampledSong.artwork}
+                  style={{ maxWidth: "100%", maxHeight: "200px" }}
+                />
               </li>
-              <li>
+              <li style={{ display: "flex", justifyContent: "center" }}>
                 <audio src={sampledSong.previewUrl} controls={true} />
               </li>
               <li>{sampledSong.genre}</li>
-              <li>{sampledSong.releaseDate}</li>
+              <li>{new Date(sampledSong.releaseDate).toLocaleDateString()}</li>
             </ul>
           </div>
-          <input
-            type="date"
-            name="post_date"
-            placeholder="date of game"
+
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => {
+              setSelectedDate(date);
+              // Convert to local date string
+              const localDateString = new Date(
+                date.getTime() - date.getTimezoneOffset() * 60000
+              )
+                .toISOString()
+                .split("T")[0];
+              console.log(localDateString);
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                post_date: localDateString,
+              }));
+            }}
+            minDate={new Date()}
+            filterDate={filterDisabledDates}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="Select a date"
             className="grid-cols-2 w-full bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-1"
-            value={formData.post_date}
-            onChange={handleChange}
           />
+
           <button
             className="bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out bg-opacity-50 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-10 w-full font-bold text-white"
             type="button"
