@@ -13,7 +13,7 @@ class SongPost(models.Model):
     sampled_audio = models.URLField()
     sampler_year = models.IntegerField()
     sampled_year = models.IntegerField()
-    post_date = models.DateField()
+    post_date = models.DateField(unique=True)
 
     def __str__(self):
         return self.title
