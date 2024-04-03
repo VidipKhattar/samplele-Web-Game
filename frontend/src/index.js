@@ -17,7 +17,6 @@ function Root() {
 
 const root = createRoot(document.getElementById("root"));
 root.render(<Root />);
-console.log("hello");
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
