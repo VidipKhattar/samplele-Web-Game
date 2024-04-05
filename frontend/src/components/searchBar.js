@@ -18,8 +18,6 @@ const SearchBar = ({ onSearchQueryChange, onSearchResultsChange }) => {
         `https://itunes.apple.com/search?term=${value}&entity=song&limit=5`
       );
 
-      console.log(response.data.results);
-
       const tracks = response.data.results.map((result) => ({
         name: result.trackName,
         artist: result.artistName,
@@ -60,36 +58,39 @@ const SearchBar = ({ onSearchQueryChange, onSearchResultsChange }) => {
   };
 
   return (
-    <div className="relative z-10">
-      <input
-        type="text"
-        value={query}
-        onChange={handleChange}
-        placeholder="Search for songs..."
-        className="w-full bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-1"
-      />
-      {query && (
-        <button
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400 focus:outline-none"
-          onClick={handleClearSearch}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+    <div className="relative">
+      <div>
+        <input
+          type="text"
+          value={query}
+          onChange={handleChange}
+          placeholder="Search for songs..."
+          className="w-full bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-2 px-4"
+        />
+
+        {query && (
+          <button
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 text-gray-400 focus:outline-none"
+            onClick={handleClearSearch}
           >
-            <path
-              fillRule="evenodd"
-              d="M4.293 5.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 11-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
-      )}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.293 5.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 11-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        )}
+      </div>
       {audioSrc && <audio src={audioSrc} controls={false}></audio>}
       {query && suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 z-20 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg">
+        <ul className="absolute top-full left-0 z-40 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg">
           {suggestions.map((song, index) => (
             <li
               key={`${song.name}-${song.artist}-${index}`}
