@@ -8,6 +8,8 @@ function AdminPage() {
   const [formData, setFormData] = useState({
     sampler_title: "",
     sampled_title: "",
+    sampler_album: "",
+    sampled_album: "",
     sampler_artist: "",
     sampled_artist: "",
     sampler_artwork: "",
@@ -56,6 +58,7 @@ function AdminPage() {
     setFormData((prevFormData) => ({
       ...prevFormData,
       sampler_title: results.name,
+      sampler_album: results.album,
       sampler_artist: results.artist,
       sampler_artwork: results.artwork,
       sampler_audio: results.previewUrl,
@@ -68,6 +71,7 @@ function AdminPage() {
     setFormData((prevFormData) => ({
       ...prevFormData,
       sampled_title: results.name,
+      sampled_album: results.album,
       sampled_artist: results.artist,
       sampled_artwork: results.artwork,
       sampled_audio: results.previewUrl,
@@ -82,6 +86,8 @@ function AdminPage() {
     const requiredFields = [
       "sampler_title",
       "sampled_title",
+      "sampler_album",
+      "sampled_album",
       "sampler_artist",
       "sampled_artist",
       "sampler_artwork",
@@ -112,6 +118,8 @@ function AdminPage() {
       setFormData({
         sampler_title: "",
         sampled_title: "",
+        sampler_album: "",
+        sampled_album: "",
         sampler_artist: "",
         sampled_artist: "",
         sampler_artwork: "",
@@ -144,7 +152,7 @@ function AdminPage() {
               Sampler Song.
             </header>
             <SearchBar
-              onSearchResultsChange={handleSamplerSearchResultsChange}
+              onSearchResultsChange={handleSampledSearchResultsChange}
             />
           </div>
           <div className="lg:col-span-1 md:col-span-1 sm:col-span-1">
@@ -152,7 +160,7 @@ function AdminPage() {
               Sampled Song.
             </header>
             <SearchBar
-              onSearchResultsChange={handleSampledSearchResultsChange}
+              onSearchResultsChange={handleSamplerSearchResultsChange}
             />
           </div>
           <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-3xl shadow-lg text-center">
