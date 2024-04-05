@@ -9,6 +9,8 @@ class SongPostSerializer(serializers.ModelSerializer):
             "id",
             "sampler_title",
             "sampled_title",
+            "sampled_album",
+            "sampler_album",
             "sampler_artist",
             "sampled_artist",
             "sampler_artwork",
