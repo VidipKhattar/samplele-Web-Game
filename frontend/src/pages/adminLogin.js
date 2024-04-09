@@ -66,7 +66,7 @@ function AdminPage() {
     }));
   };
 
-  const handleSampledSearchResultsChange = (results) => {
+  const handleSampleSearchResultsChange = (results) => {
     setSampledSong(results);
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -149,39 +149,20 @@ function AdminPage() {
         <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="lg:col-span-1 md:col-span-1 sm:col-span-1">
             <header className="text-2xl font-bold mb-2 text-white">
-              Sampler Song.
+              Original Song.
             </header>
             <SearchBar
-              onSearchResultsChange={handleSampledSearchResultsChange}
+              onSearchResultsChange={handleSampleSearchResultsChange}
             />
           </div>
           <div className="lg:col-span-1 md:col-span-1 sm:col-span-1">
             <header className="text-2xl font-bold mb-2 text-white">
-              Sampled Song.
+              Sampler Song.
             </header>
             <SearchBar
               onSearchResultsChange={handleSamplerSearchResultsChange}
             />
           </div>
-          <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-3xl shadow-lg text-center">
-            <ul className="font-bold text-xl py-4">
-              <li>{samplerSong.name}</li>
-              <li>{samplerSong.artist}</li>
-              <li>{samplerSong.album}</li>
-              <li style={{ display: "flex", justifyContent: "center" }}>
-                <img
-                  src={samplerSong.artwork}
-                  style={{ maxWidth: "100%", maxHeight: "200px" }}
-                />
-              </li>
-              <li style={{ display: "flex", justifyContent: "center" }}>
-                <audio src={samplerSong.previewUrl} controls={true} />
-              </li>
-              <li>{samplerSong.genre}</li>
-              <li>{new Date(samplerSong.releaseDate).toLocaleDateString()}</li>
-            </ul>
-          </div>
-
           <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-3xl shadow-lg text-center">
             <ul className="font-bold text-xl py-4">
               <li>{sampledSong.name}</li>
@@ -198,6 +179,25 @@ function AdminPage() {
               </li>
               <li>{sampledSong.genre}</li>
               <li>{new Date(sampledSong.releaseDate).toLocaleDateString()}</li>
+            </ul>
+          </div>
+
+          <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-3xl shadow-lg text-center">
+            <ul className="font-bold text-xl py-4">
+              <li>{samplerSong.name}</li>
+              <li>{samplerSong.artist}</li>
+              <li>{samplerSong.album}</li>
+              <li style={{ display: "flex", justifyContent: "center" }}>
+                <img
+                  src={samplerSong.artwork}
+                  style={{ maxWidth: "100%", maxHeight: "200px" }}
+                />
+              </li>
+              <li style={{ display: "flex", justifyContent: "center" }}>
+                <audio src={samplerSong.previewUrl} controls={true} />
+              </li>
+              <li>{samplerSong.genre}</li>
+              <li>{new Date(samplerSong.releaseDate).toLocaleDateString()}</li>
             </ul>
           </div>
 
