@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { BrowserRouter } from "react-router-dom";
 
-const SearchBar = ({ onSearchQueryChange, onSearchResultsChange }) => {
+const SearchBar = ({ onSearchResultsChange }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [audioSrc, setAudioSrc] = useState("");
 
   const handleChange = async (event) => {
     const value = event.target.value;
-
+    console.log(value);
+    console.log(query);
     setQuery(value);
 
     // Fetch autocomplete suggestions from iTunes API
@@ -45,7 +45,6 @@ const SearchBar = ({ onSearchQueryChange, onSearchResultsChange }) => {
 
   const handleSelect = (song) => {
     setQuery(`${song.name} - ${song.artist}`);
-    console.log("Selected Track:", song);
     setAudioSrc(song.previewUrl);
     onSearchResultsChange(song);
     setSuggestions([]);
@@ -55,6 +54,7 @@ const SearchBar = ({ onSearchQueryChange, onSearchResultsChange }) => {
     setQuery("");
     setSuggestions([]);
     setAudioSrc("");
+    onSearchResultsChange("");
   };
 
   return (
@@ -65,7 +65,7 @@ const SearchBar = ({ onSearchQueryChange, onSearchResultsChange }) => {
           value={query}
           onChange={handleChange}
           placeholder="Search for songs..."
-          className="w-full bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-2 px-4"
+          className="font-semibold w-full text-gray-600 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-2 px-4"
         />
 
         {query && (
@@ -90,13 +90,15 @@ const SearchBar = ({ onSearchQueryChange, onSearchResultsChange }) => {
       </div>
       {audioSrc && <audio src={audioSrc} controls={false}></audio>}
       {query && suggestions.length > 0 && (
-        <ul className="absolute top-full left-0 z-40 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg">
+        <ul className="font-semibold text-gray-600  absolute top-full left-0 z-40 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg">
           {suggestions.map((song, index) => (
             <li
               key={`${song.name}-${song.artist}-${index}`}
               onClick={() => handleSelect(song)}
               className={`cursor-pointer py-1 px-2 hover:text-white transition-colors duration-250 rounded ${
-                index < suggestions.length - 1 ? "border-b border-black" : ""
+                index < suggestions.length - 1
+                  ? "border-b border-gray-600 text-gray-600  "
+                  : ""
               }`}
             >
               {song.name} - {song.artist}
