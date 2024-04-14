@@ -11,7 +11,6 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="admin" element={<Login />} />
-
         <Route path="easteregg" element={<div>HAHAHHAHAHAHA</div>} />
       </Routes>
     </BrowserRouter>
