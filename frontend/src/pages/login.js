@@ -22,7 +22,7 @@ function Login({ onLogin }) {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/login2/", // URL for your login view
+        "http://127.0.0.1:8000/login/", // URL for your login view
         credentials
       );
       setMessage("Login successful"); // Set message for successful login
