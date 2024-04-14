@@ -26,7 +26,6 @@ function AdminPage() {
   const [disabledDates, setDisabledDates] = useState([]);
 
   useEffect(() => {
-    // Fetch disabled dates from API
     axios
       .get("http://127.0.0.1:8000/songposts/")
       .then((response) => {
@@ -223,7 +222,6 @@ function AdminPage() {
             placeholderText="Select a date"
             className="grid-cols-2 w-full bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-1"
           />
-
           <button
             className="bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out bg-opacity-50 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-10 w-full font-bold text-white"
             type="button"
