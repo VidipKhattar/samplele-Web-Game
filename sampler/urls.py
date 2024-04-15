@@ -17,4 +17,4 @@ Including another URLconf
 
 from django.urls import path, include
 
-urlpatterns = [path("", include("playground.urls"))]
+urlpatterns = [path("", include("backend.urls"))]
