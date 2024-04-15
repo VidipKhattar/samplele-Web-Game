@@ -48,8 +48,7 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 # PEP 582; used by e.g. github.com/David-oConnor/pyflow
-_pypackages.
-/
+_pypackages./
 # Environments
 .env
 venv
