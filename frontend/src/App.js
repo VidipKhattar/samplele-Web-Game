@@ -1,9 +1,7 @@
-import "./App.css";
 import React from "react";
 import MainPage from "./pages/mainPage";
-import AdminLogin from "./pages/adminLogin";
 import Login from "./pages/login";
-import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -11,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="admin" element={<Login />} />
-        <Route path="easteregg" element={<div>HAHAHHAHAHAHA</div>} />
+        <Route path="easteregg" element={<div>easter egg</div>} />
       </Routes>
     </BrowserRouter>
   );

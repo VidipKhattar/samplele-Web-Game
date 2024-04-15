@@ -13,11 +13,8 @@ from django.http import JsonResponse
 class LoginInfoAPIView(APIView):
     def post(self, request):
         if request.method == "POST":
-            print(request.data)
             username = request.data.get("username")
             password = request.data.get("password")
-            print(username)
-            print(password)
             user = authenticate(request, username=username, password=password)
             if user is not None and user.is_superuser:
                 login(request, user)

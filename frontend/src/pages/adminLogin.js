@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import SearchBar from "../components/searchBar"; // Import the SearchBar component
+import SearchBar from "../components/searchBar";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -34,7 +34,6 @@ function AdminPage() {
           disabledDates.push(new Date(response.data[i].post_date));
         }
         setDisabledDates(disabledDates);
-        // Assuming the response contains an array of date strings
       })
       .catch((error) => {
         console.error("Error fetching disabled dates:", error);
@@ -42,16 +41,13 @@ function AdminPage() {
   }, []);
 
   const filterDisabledDates = (date) => {
-    // Convert date objects to string format for comparison
     const dateString = date.toDateString();
-    //console.log(dateString);
-    // Check if the date string matches any of the disabled date strings
+
     return !disabledDates.some(
       (disabledDate) => disabledDate.toDateString() === dateString
     );
   };
 
-  // Callback function to update search results
   const handleSamplerSearchResultsChange = (results) => {
     setSamplerSong(results);
     setFormData((prevFormData) => ({
@@ -81,7 +77,6 @@ function AdminPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if any required field is empty
     const requiredFields = [
       "sampler_title",
       "sampled_title",
@@ -100,20 +95,15 @@ function AdminPage() {
     const missingFields = requiredFields.filter((field) => !formData[field]);
 
     if (missingFields.length > 0) {
-      // Display alert for missing fields
       alert(`The following fields are required: ${missingFields.join(", ")}`);
       return;
     }
 
     try {
-      console.log(formData);
-      // Post song details to backend
       const response = await axios.post(
         "http://127.0.0.1:8000/songposts/",
         formData
       );
-      console.log("Song added successfully:", response.data);
-      // Reset form after successful submission
       setFormData({
         sampler_title: "",
         sampled_title: "",
@@ -133,8 +123,6 @@ function AdminPage() {
       alert("Song added successfully");
       window.location.reload();
     } catch (error) {
-      console.error("Error adding song:", error);
-      // Display alert for error
       alert(error + " date could be taken");
     }
   };
@@ -204,13 +192,11 @@ function AdminPage() {
             selected={selectedDate}
             onChange={(date) => {
               setSelectedDate(date);
-              // Convert to local date string
               const localDateString = new Date(
                 date.getTime() - date.getTimezoneOffset() * 60000
               )
                 .toISOString()
                 .split("T")[0];
-              console.log(localDateString);
               setFormData((prevFormData) => ({
                 ...prevFormData,
                 post_date: localDateString,

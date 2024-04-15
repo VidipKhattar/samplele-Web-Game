@@ -22,32 +22,23 @@ function MainPage() {
   const [tryCount, setTryCount] = useState(4);
   const [triedSongs, setTriedSongs] = useState([]);
   const storedTries = Cookies.get("tries");
-  //const storedSongTried = Cookies.get("songTries");
   const storedCorrect = Cookies.get("correct");
-
-  const [countdown, setCountdown] = useState(""); // State to hold the countdown
+  const [countdown, setCountdown] = useState("");
 
   function midnightExpiration() {
-    // Get the current date
     const currentDate = new Date();
-
-    // Calculate the time until midnight
     const timeUntilMidnight =
       new Date(
         currentDate.getFullYear(),
         currentDate.getMonth(),
-        currentDate.getDate() + 1, // Add 1 day to get tomorrow
-        0, // Hours
-        0, // Minutes
-        0 // Seconds
+        currentDate.getDate() + 1,
+        0,
+        0,
+        0
       ) - currentDate;
-
-    // Set the expiration time for the cookie to midnight
     const expiresAtMidnight = new Date(
       currentDate.getTime() + timeUntilMidnight
     );
-
-    // Return the expiration date
     return expiresAtMidnight;
   }
 
@@ -63,33 +54,23 @@ function MainPage() {
       const minutes = Math.floor((difference / 1000 / 60) % 60);
       const seconds = Math.floor((difference / 1000) % 60);
 
-      setCountdown(`${hours}:${minutes}:${seconds}`); // Update the countdown
+      setCountdown(`${hours}:${minutes}:${seconds}`);
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
-    console.log("hello");
     if (storedTries) {
-      console.log(parseInt(storedTries));
       setTryCount(parseInt(storedTries));
-      console.log(tryCount);
-    } else {
-      console.log("trys doesnt exist");
     }
     if (storedCorrect) {
       setCorrect(storedCorrect == "true");
-      console.log(correct);
-    } else {
-      console.log("correct doesnt exist");
     }
-
     axios
       .get("http://127.0.0.1:8000/songposts")
       .then((res) => {
-        let data = res.data;
         const foundSong = res.data.find((item) => item.post_date === today);
         if (foundSong) {
           setGameInstance(foundSong);
@@ -100,19 +81,19 @@ function MainPage() {
             foundSong.sampler_title + "-" + foundSong.sampler_artist
           );
         }
-        setLoading(false); // Update loading state when data fetching is complete
+        setLoading(false);
       })
       .catch((err) => {
-        setLoading(false); // Update loading state in case of an error
+        setLoading(false);
       });
   }, []);
 
   const checkSong = () => {
     if (triedSongs.includes(userAnswer)) {
       setIsRepeat(true);
-      setIsShaking(true); // Start shaking animation
+      setIsShaking(true);
       setTimeout(() => {
-        setIsShaking(false); // Stop shaking animation after some time
+        setIsShaking(false);
       }, 1000);
     } else if (gameAnswer == userAnswer) {
       setIsRepeat(false);
@@ -123,15 +104,14 @@ function MainPage() {
       });
       Cookies.set("correct", "true", { expires: midnightExpiration() });
     } else {
-      setIsShaking(true); // Start shaking animation
+      setIsShaking(true);
       setTimeout(() => {
-        setIsShaking(false); // Stop shaking animation after some time
-      }, 1000); // Adjust the time as needed
+        setIsShaking(false);
+      }, 1000);
       triedSongs.push(userAnswer);
       setTriedSongs(triedSongs);
       setTryCount(tryCount - 1);
       setIsRepeat(false);
-      console.log(tryCount);
       Cookies.set("tries", (tryCount - 1).toString(), {
         expires: midnightExpiration(),
       });
@@ -141,7 +121,6 @@ function MainPage() {
 
   const handleSamplerSearchResultsChange = (results) => {
     if (results) {
-      console.log("hello");
       setUserAnswer(results.name + "-" + results.artist);
     } else {
       setUserAnswer("");
@@ -150,44 +129,38 @@ function MainPage() {
 
   const handleButtonClick = () => {
     if (!isPlayingSample) {
-      // If the audio is not currently playing
-      setIsPlayingSample(true); // Restart the audio from the beginning
+      setIsPlayingSample(true);
       samplerSongAudio.pause();
       setIsPlayingSampler(false);
-      sampledSongAudio.play(); // Play the audio
+      sampledSongAudio.play();
       sampledSongAudio.onended = () => {
-        setIsPlayingSample(false); // Set state to indicate audio playback has ended
+        setIsPlayingSample(false);
       };
     } else {
-      // If the audio is currently playing
-      setIsPlayingSample(false); // Set state to indicate audio playback has ende
-      // Create an Audio object
-      sampledSongAudio.pause(); // Pause the audio
+      setIsPlayingSample(false);
+      sampledSongAudio.pause();
     }
   };
 
   const handleSamplerButtonClick = () => {
     if (!isPlayingSampler) {
-      // If the audio is not currently playing
-      setIsPlayingSampler(true); // Restart the audio from the beginning
+      setIsPlayingSampler(true);
       sampledSongAudio.pause();
       setIsPlayingSample(false);
-      samplerSongAudio.play(); // Play the audio
+      samplerSongAudio.play();
       samplerSongAudio.onended = () => {
-        setIsPlayingSampler(false); // Set state to indicate audio playback has ended
+        setIsPlayingSampler(false);
       };
     } else {
-      // If the audio is currently playing
-      setIsPlayingSampler(false); // Set state to indicate audio playback has ende
-      // Create an Audio object
-      samplerSongAudio.pause(); // Pause the audio
+      setIsPlayingSampler(false);
+      samplerSongAudio.pause();
     }
   };
 
   if (loading) {
-    return <Loading></Loading>; // Display a loading indicator while fetching data
+    return <Loading></Loading>;
   } else if (!gameInstance || Object.keys(gameInstance).length === 0) {
-    return <NoSong></NoSong>; // Display message when song is empty
+    return <NoSong></NoSong>;
   }
 
   return (

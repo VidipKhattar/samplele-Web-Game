@@ -8,11 +8,8 @@ const SearchBar = ({ onSearchResultsChange }) => {
 
   const handleChange = async (event) => {
     const value = event.target.value;
-    console.log(value);
-    console.log(query);
     setQuery(value);
 
-    // Fetch autocomplete suggestions from iTunes API
     try {
       const response = await axios.get(
         `https://itunes.apple.com/search?term=${value}&entity=song&limit=5`
@@ -28,7 +25,6 @@ const SearchBar = ({ onSearchResultsChange }) => {
         releaseDate: result.releaseDate,
       }));
 
-      // Filter out duplicates
       const uniqueTracks = tracks.filter(
         (track, index, self) =>
           index ===
@@ -38,9 +34,7 @@ const SearchBar = ({ onSearchResultsChange }) => {
       );
 
       setSuggestions(uniqueTracks);
-    } catch (error) {
-      console.error("Error fetching autocomplete suggestions:", error);
-    }
+    } catch (error) {}
   };
 
   const handleSelect = (song) => {
