@@ -61,7 +61,13 @@ function MainPage() {
   }, []);
 
   useEffect(() => {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Date();
+    const formattedDate =
+      today.getFullYear() +
+      "-" +
+      ("0" + (today.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + today.getDate()).slice(-2);
     if (storedTries) {
       setTryCount(parseInt(storedTries));
     }
@@ -71,7 +77,9 @@ function MainPage() {
     axios
       .get("http://127.0.0.1:8000/songposts")
       .then((res) => {
-        const foundSong = res.data.find((item) => item.post_date === today);
+        const foundSong = res.data.find(
+          (item) => item.post_date === formattedDate
+        );
         if (foundSong) {
           setGameInstance(foundSong);
           setSampledSongAudio(new Audio(foundSong.sampled_audio));
