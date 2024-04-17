@@ -85,6 +85,8 @@ TEMPLATES = [
     },
 ]
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 WSGI_APPLICATION = "sampler.wsgi.application"
 
 
