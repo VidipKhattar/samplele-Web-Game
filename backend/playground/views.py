@@ -30,7 +30,7 @@ class SongPostListCreate(generics.ListCreateAPIView):
     queryset = SongPost.objects.all()
     serializer_class = SongPostSerializer
 
-    def delete():
+    def delete(self, request, *args, **kwargs):
         SongPost.objects.all().delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
