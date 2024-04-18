@@ -21,3 +21,8 @@ class SongPost(models.Model):
         return (
             f"{self.sampler_title} - {self.sampled_title}"  # Adjust this line as needed
         )
+
+
+class Member(models.Model):
+    firstname = models.CharField(max_length=255)
+    lastname = models.CharField(max_length=255)

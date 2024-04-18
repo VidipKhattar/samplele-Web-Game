@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import SongPost
+from .models import Member
 
 
 class SongPostSerializer(serializers.ModelSerializer):
@@ -22,3 +23,9 @@ class SongPostSerializer(serializers.ModelSerializer):
             "sampled_year",
             "post_date",
         ]
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ["firstname", "lastname"]

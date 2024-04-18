@@ -12,4 +12,5 @@ urlpatterns = [
         views.SongPostRetrieveUpdateDestroy.as_view(),
         name="songpost-view-destroy",
     ),
+    path("model/", views.MemberView.as_view(), name="member-view"),
 ]
