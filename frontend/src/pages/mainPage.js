@@ -98,7 +98,7 @@ function MainPage() {
       .catch((err) => {
         setLoading(false);
       });
-  }, []);
+  }, [storedCorrect, storedTries]);
 
   const checkSong = () => {
     if (triedSongs.includes(userAnswer)) {
@@ -107,7 +107,7 @@ function MainPage() {
       setTimeout(() => {
         setIsShaking(false);
       }, 1000);
-    } else if (gameAnswer == userAnswer) {
+    } else if (gameAnswer === userAnswer) {
       setIsRepeat(false);
       setCorrect(true);
       handleSamplerButtonClick();
@@ -290,7 +290,7 @@ function MainPage() {
                     correct || tryCount < 1 ? "" : "blur-xl"
                   }`}
                 />
-                {(correct || tryCount == 0) && (
+                {(correct || tryCount === 0) && (
                   <button
                     className="absolute bg-white bg-opacity-5 backdrop-filter backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-55 duration-300 w-16 h-16 flex justify-center items-center"
                     style={{
