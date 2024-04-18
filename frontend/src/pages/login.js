@@ -8,7 +8,7 @@ function Login({ onLogin }) {
     password: "",
   });
   const [message, setMessage] = useState("");
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [, setLoggedIn] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,8 +21,10 @@ function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/login/",
+      await axios.post(
+        process.env.NODE_ENV === "production"
+          ? `${process.env.REACT_APP_API_BASE_URL_PROD}/login/`
+          : `${process.env.REACT_APP_API_BASE_URL_DEV}/login/`,
         credentials
       );
       setMessage("Login successful");

@@ -72,10 +72,14 @@ function MainPage() {
       setTryCount(parseInt(storedTries));
     }
     if (storedCorrect) {
-      setCorrect(storedCorrect == "true");
+      setCorrect(storedCorrect === "true");
     }
     axios
-      .get("http://127.0.0.1:8000/songposts")
+      .get(
+        process.env.NODE_ENV === "production"
+          ? process.env.REACT_APP_API_BASE_URL_PROD + "/songposts"
+          : process.env.REACT_APP_API_BASE_URL_DEV + "/songposts"
+      )
       .then((res) => {
         const foundSong = res.data.find(
           (item) => item.post_date === formattedDate
@@ -94,7 +98,7 @@ function MainPage() {
       .catch((err) => {
         setLoading(false);
       });
-  }, []);
+  }, [storedCorrect, storedTries]);
 
   const checkSong = () => {
     if (triedSongs.includes(userAnswer)) {
@@ -103,7 +107,7 @@ function MainPage() {
       setTimeout(() => {
         setIsShaking(false);
       }, 1000);
-    } else if (gameAnswer == userAnswer) {
+    } else if (gameAnswer === userAnswer) {
       setIsRepeat(false);
       setCorrect(true);
       handleSamplerButtonClick();
@@ -286,7 +290,7 @@ function MainPage() {
                     correct || tryCount < 1 ? "" : "blur-xl"
                   }`}
                 />
-                {(correct || tryCount == 0) && (
+                {(correct || tryCount === 0) && (
                   <button
                     className="absolute bg-white bg-opacity-5 backdrop-filter backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-55 duration-300 w-16 h-16 flex justify-center items-center"
                     style={{

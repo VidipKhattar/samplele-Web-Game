@@ -8,7 +8,11 @@ function AdminPage() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/songposts/")
+      .get(
+        process.env.NODE_ENV === "production"
+          ? process.env.REACT_APP_API_BASE_URL_PROD + "/songposts"
+          : process.env.REACT_APP_API_BASE_URL_DEV + "/songposts"
+      )
       .then((response) => {
         setSongPosts(response.data);
       })

@@ -28,7 +28,11 @@ function AdminPage() {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/songposts/")
+      .get(
+        process.env.NODE_ENV === "production"
+          ? process.env.REACT_APP_API_BASE_URL_PROD + "/songposts"
+          : process.env.REACT_APP_API_BASE_URL_DEV + "/songposts"
+      )
       .then((response) => {
         let disabledDates = [];
         for (let i = 0; i < response.data.length; i++) {
@@ -132,8 +136,10 @@ function AdminPage() {
     }
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/songposts/",
+      await axios.post(
+        process.env.NODE_ENV === "production"
+          ? `${process.env.REACT_APP_API_BASE_URL_PROD}/songposts/`
+          : `${process.env.REACT_APP_API_BASE_URL_DEV}/songposts/`,
         formData
       );
       setFormData({
@@ -192,6 +198,7 @@ function AdminPage() {
                   <img
                     src={sampledSong.artwork}
                     style={{ maxWidth: "100%", maxHeight: "200px" }}
+                    alt="alt.png"
                   />
                 </li>
                 <li style={{ display: "flex", justifyContent: "center" }}>
@@ -213,6 +220,7 @@ function AdminPage() {
                   <img
                     src={samplerSong.artwork}
                     style={{ maxWidth: "100%", maxHeight: "200px" }}
+                    alt="alt.png"
                   />
                 </li>
                 <li style={{ display: "flex", justifyContent: "center" }}>
