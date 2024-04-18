@@ -18,4 +18,6 @@ class SongPost(models.Model):
     post_date = models.DateField(unique=True)
 
     def __str__(self):
-        return self.title
+        return (
+            f"{self.sampler_title} - {self.sampled_title}"  # Adjust this line as needed
+        )

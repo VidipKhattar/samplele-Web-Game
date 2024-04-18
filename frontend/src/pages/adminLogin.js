@@ -239,7 +239,7 @@ function AdminPage() {
                   post_date: localDateString,
                 }));
               }}
-              //minDate={new Date()}
+              minDate={new Date()}
               filterDate={filterDisabledDates}
               dateFormat="yyyy-MM-dd"
               placeholderText="Select a date"
