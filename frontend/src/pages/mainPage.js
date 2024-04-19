@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import playButton from "../playbutton.svg";
 import pauseButton from "../pausebutton.svg";
@@ -405,6 +406,13 @@ function MainPage() {
             </p>
           </div>
         </div>
+        <Link to="/admin">
+          {" "}
+          {/* Link to the admin page */}
+          <button className="bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out mt-4 px-6 py-3 rounded-lg text-white font-bold">
+            Go to Admin Page
+          </button>
+        </Link>
       </div>
     </div>
   );
