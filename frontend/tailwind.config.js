@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
-        "gradient-xy": "gradient-xy 5s ease infinite",
+        "gradient-xy": "gradient-xy 10s ease infinite",
         "flash-green": "flash-green 2s linear",
       },
       keyframes: {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
-import playButton from "../playbutton.svg";
-import pauseButton from "../pausebutton.svg";
+import playButton from "../assets/playbutton.svg";
+import pauseButton from "../assets/pausebutton.svg";
 import axios from "axios";
 import SearchBar from "../components/searchBar";
 import Loading from "./loading";
@@ -99,7 +99,8 @@ function MainPage() {
       .catch((err) => {
         setLoading(false);
       });
-  }, [storedCorrect, storedTries]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const checkSong = () => {
     if (triedSongs.includes(userAnswer)) {
@@ -177,9 +178,9 @@ function MainPage() {
   }
 
   return (
-    <div className="bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-x min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center ">
+    <div className="inset-0 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-x min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center">
       <div className="container mx-auto px-4 text-center">
-        <header className="text-6xl font-bold mb-2 text-gray-600	">
+        <header className="sm:text-6xl text-2xl font-bold mx-2 pt-2 text-gray-600	">
           samplele
           <Link to="/admin">
             <button>.</button>
@@ -187,34 +188,34 @@ function MainPage() {
         </header>
         {tryCount < 4 ||
           (!correct && (
-            <h2 className="text-gray-600 text-lg lg:text-xl md:text-xl font-bold mb-2">
+            <h2 className="text-gray-600 text-lg text-lg md:text-lg  my-2">
               listen to the sample to try and guess which song samples it.
             </h2>
           ))}
-        <h2 className="text-gray-600 text-4xl font-bold mb-4">
+        <h2 className="text-gray-600 text-2xl  sm:my-4 mb-2">
           {tryCount === 0 && !correct && !isRepeat && (
-            <span className="animate-pulse text-black  ">
+            <span className="animate-pulse text-red-600  ">
               unlucky, try again tomorrow
             </span>
           )}
           {tryCount === 1 && !correct && !isRepeat && (
-            <span className="animate-pulse text-black  ">last chance.</span>
+            <span className="animate-pulse text-red-600  ">last chance.</span>
           )}
           {tryCount === 2 && !correct && !isRepeat && (
-            <span className="animate-pulse text-black  ">
+            <span className="animate-pulse text-red-600  ">
               not great at this are you.
             </span>
           )}
           {tryCount === 3 && !correct && !isRepeat && (
-            <span className="animate-pulse text-black ">wrong.</span>
+            <span className="animate-pulse text-red-600 ">wrong.</span>
           )}
           {correct && !isRepeat && (
-            <span className="animate-pulse text-green-500 text-6xl  duration-2000">
+            <span className="animate-pulse text-green-500 duration-2000">
               correct
             </span>
           )}
           {isRepeat && (
-            <span className="animate-flash-green text-black	duration-2000">
+            <span className="animate-flash-green text-red-600	duration-2000">
               already tried.
             </span>
           )}
@@ -402,10 +403,10 @@ function MainPage() {
               </div>
             </div>
             <p className="animate-bounce text-gray-600 font-bold text-lg ">
-              come back tomorrow for a new song 👀👀👀
+              come back tomorrow for a new song 👀
             </p>
             <p className="text-gray-600 font-bold text-lg animate-bounce  ">
-              {countdown}
+              in {countdown}
             </p>
           </div>
         </div>

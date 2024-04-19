@@ -21,13 +21,42 @@ function AdminPage() {
       });
   }, []);
 
+  const handleSongDelete = (e) => {
+    console.log(e.target.value);
+    axios
+      .delete(
+        process.env.NODE_ENV === "production"
+          ? process.env.REACT_APP_API_BASE_URL_PROD +
+              "/songposts/" +
+              e.target.value
+          : process.env.REACT_APP_API_BASE_URL_DEV +
+              "/songposts/" +
+              e.target.value
+      )
+      .then((response) => {
+        alert("Song successfully deleted");
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error deleting song posts:", error);
+      });
+  };
+
   const renderSongPosts = () => {
     return songPosts.map((post) => (
       <tr key={post.id} className="border-b border-gray-200">
         <td className="py-4 px-6">{post.post_date}</td>
         <td className="py-4 px-6">{post.sampler_title}</td>
-        <td className="py-4 px-6">{post.sampler_artist}</td>
         <td className="py-4 px-6">{post.sampled_title}</td>
+        <td className="py-4 px-6">
+          <button
+            className="text-2xl"
+            onClick={handleSongDelete}
+            value={post.id}
+          >
+            🗑️
+          </button>
+        </td>
       </tr>
     ));
   };
@@ -41,8 +70,8 @@ function AdminPage() {
             <tr>
               <th className="py-4 px-6">Post Date</th>
               <th className="py-4 px-6">Sampler Title</th>
-              <th className="py-4 px-6">Sampler Artist</th>
               <th className="py-4 px-6">Sampled Title</th>
+              <th className="py-4 px-6">Delete</th>
             </tr>
           </thead>
           <tbody>{renderSongPosts()}</tbody>
