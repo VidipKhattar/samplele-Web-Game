@@ -180,7 +180,10 @@ function MainPage() {
     <div className="bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-x min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center ">
       <div className="container mx-auto px-4 text-center">
         <header className="text-6xl font-bold mb-2 text-gray-600	">
-          samplele.
+          samplele
+          <Link to="/admin">
+            <button>.</button>
+          </Link>
         </header>
         {tryCount < 4 ||
           (!correct && (
@@ -406,13 +409,6 @@ function MainPage() {
             </p>
           </div>
         </div>
-        <Link to="/admin">
-          {" "}
-          {/* Link to the admin page */}
-          <button className="bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out mt-4 px-6 py-3 rounded-lg text-white font-bold">
-            Go to Admin Page
-          </button>
-        </Link>
       </div>
     </div>
   );
