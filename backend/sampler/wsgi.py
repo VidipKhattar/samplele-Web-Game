@@ -12,7 +12,7 @@ import os
 from django.core.wsgi import get_wsgi_application
 
 settings_module = (
-    "sampler.deployment" if "WEBSITE_HOSTNAME" in os.environ else "sampler.settings"
+    "sampler.settings" if "WEBSITE_HOSTNAME" in os.environ else "sampler.settings"
 )
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_module)

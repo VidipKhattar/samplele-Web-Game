@@ -82,6 +82,8 @@ function MainPage() {
           : process.env.REACT_APP_API_BASE_URL_DEV + "/songposts"
       )
       .then((res) => {
+        console.log(process.env.REACT_APP_API_BASE_URL_PROD);
+        console.log(process.env.REACT_APP_API_BASE_URL_DEV);
         const foundSong = res.data.find(
           (item) => item.post_date === formattedDate
         );

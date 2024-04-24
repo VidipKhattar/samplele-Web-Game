@@ -166,7 +166,7 @@ function AdminPage() {
   };
 
   return (
-    <div className="bg-gradient-to-bl from-blue-400 to-green-500 via-purple-500 animate-gradient-x min-h-screen">
+    <div className="bg-gradient-to-bl from-blue-400 to-green-500 via-purple-500 animate-gradient-xy min-h-screen">
       <div className="lg:flex lg:justify-center lg:items-center md:flex md:justify-center md:items-center">
         <div className="container mx-auto px-4 text-center">
           <header className="text-6xl font-bold mb-2 text-white">
