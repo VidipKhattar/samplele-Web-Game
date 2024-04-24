@@ -32,19 +32,19 @@ STORAGES = {
     },
 }
 
-CONNECTION = os.environ["AZURE_POSTGRESQL_CONNECTIONSTRING"]
-CONNECTION_STR = {
-    pair.split("=")[0]: pair.split("=")[1] for pair in CONNECTION.split(" ")
-}
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": CONNECTION_STR["dbname"],
-        "USER": CONNECTION_STR["user"],
-        "PASSWORD": CONNECTION_STR["password"],
-        "HOST": CONNECTION_STR["host"],
+        "NAME": "railway",
+        "USER": "postgres",
+        "PASSWORD": "DIZVrghxuVHtIODvNnIXFyPanKmDRhjC",
+        "HOST": "viaduct.proxy.rlwy.net",
+        "PORT": "59435",
     }
 }
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATIC_URL = "static/"
+STATICFILES_DIRS = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build", "static")
