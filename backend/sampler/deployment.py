@@ -21,7 +21,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = ["https://gentle-ground-05ed00800.5.azurestaticapps.net"]
+CORS_ALLOWED_ORIGINS = [
+    "https://samplele-frontend-28la4wo7d-vidipkhattars-projects.vercel.app/",
+    "https://samplele-frontend.vercel.app/",
+]
 
 STORAGES = {
     "default": {
