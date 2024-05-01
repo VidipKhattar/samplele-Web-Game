@@ -7,6 +7,7 @@ import axios from "axios";
 import SearchBar from "../components/searchBar";
 import Loading from "./loading";
 import NoSong from "./noSong";
+import { Analytics } from "@vercel/analytics/react";
 
 function MainPage() {
   const [gameInstance, setGameInstance] = useState({});
@@ -411,6 +412,7 @@ function MainPage() {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 }
