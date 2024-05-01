@@ -22,8 +22,9 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://samplele-frontend-28la4wo7d-vidipkhattars-projects.vercel.app/",
-    "https://samplele-frontend.vercel.app/",
+    "https://samplele-frontend-28la4wo7d-vidipkhattars-projects.vercel.app",
+    "https://samplele-frontend.vercel.app",
+    "http://localhost:8000",
 ]
 
 STORAGES = {
