@@ -82,8 +82,6 @@ function MainPage() {
           : process.env.REACT_APP_API_BASE_URL_DEV + "/songposts"
       )
       .then((res) => {
-        console.log(process.env.REACT_APP_API_BASE_URL_PROD);
-        console.log(process.env.REACT_APP_API_BASE_URL_DEV);
         const foundSong = res.data.find(
           (item) => item.post_date === formattedDate
         );
@@ -180,7 +178,7 @@ function MainPage() {
   }
 
   return (
-    <div className="inset-0 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-x min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center">
+    <div className="inset-0 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-xy min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center">
       <div className="container mx-auto px-4 text-center">
         <header className="sm:text-6xl text-2xl font-bold mx-2 pt-2 text-gray-600	">
           samplele

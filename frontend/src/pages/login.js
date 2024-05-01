@@ -8,6 +8,7 @@ function Login({ onLogin }) {
     password: "",
   });
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const [, setLoggedIn] = useState(false);
 
   const handleChange = (e) => {
@@ -17,9 +18,9 @@ function Login({ onLogin }) {
       [name]: value,
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await axios.post(
         process.env.NODE_ENV === "production"
@@ -33,23 +34,26 @@ function Login({ onLogin }) {
       onLogin();
     } catch (error) {
       setMessage("Incorrect username or password");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Check if user is already logged in
   if (localStorage.getItem("loggedIn") === "true") {
     return <AdminPage />;
   }
 
   return (
     <div className="bg-gradient-to-bl from-blue-400 to-green-500 via-purple-500 animate-gradient-x min-h-screen lg:flex lg:justify-center lg:items-center md:flex md:justify-center md:items-center">
-      <div className="container mx-auto px-4 text-center">
-        <h2 className="text-6xl font-bold mb-2 text-white ">Admin Login</h2>
+      <div className=" px-4 text-center">
+        <h2 className="text-3xl sm:text-6xl font-bold mb-2 text-white ">
+          Admin Login
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="">
             <input
               type="text"
-              className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 m-2 rounded-xl shadow-lg text-center"
+              className="container bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 my-4 rounded-xl shadow-lg text-center"
               name="username"
               value={credentials.username}
               onChange={handleChange}
@@ -57,18 +61,27 @@ function Login({ onLogin }) {
             />
             <input
               type="password"
-              className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 m-2 rounded-xl shadow-lg text-center"
+              className="container bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 my-2 rounded-xl shadow-lg text-center"
               name="password"
               value={credentials.password}
               onChange={handleChange}
               placeholder="Password"
             />
           </div>
+
           <button
-            className="bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out bg-opacity-50 backdrop-filter backdrop-blur-lg p-2 lg:w-1/2 md:w-1/2 sm:w-1/2 rounded-xl shadow-lg my-5 w-full font-bold text-white"
+            className="container bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out bg-opacity-50 backdrop-filter backdrop-blur-lg p-2  rounded-xl shadow-lg my-5 font-bold text-white relative"
             type="submit"
+            disabled={loading}
           >
-            Login
+            {loading ? (
+              <div
+                className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                role="status"
+              ></div>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
         {message && (

@@ -25,6 +25,7 @@ function AdminPage() {
   const [sampledSong, setSampledSong] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [disabledDates, setDisabledDates] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     axios
@@ -68,7 +69,6 @@ function AdminPage() {
           : "",
       }));
     } else {
-      // Handle the case when results is null or undefined
       setSamplerSong({});
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -112,6 +112,7 @@ function AdminPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const requiredFields = [
       "sampler_title",
@@ -132,6 +133,7 @@ function AdminPage() {
 
     if (missingFields.length > 0) {
       alert(`The following fields are required: ${missingFields.join(", ")}`);
+      setLoading(false);
       return;
     }
 
@@ -158,10 +160,11 @@ function AdminPage() {
         post_date: "",
       });
 
-      alert("Song added successfully");
+      setLoading(false);
       window.location.reload();
     } catch (error) {
       alert(error + " date could be taken");
+      setLoading(false);
     }
   };
 
@@ -172,7 +175,7 @@ function AdminPage() {
           <header className="text-6xl font-bold mb-2 text-white">
             Admin Page.
           </header>
-          <div className="grid grid-cols-1 md:grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             <div className="lg:col-span-1 md:col-span-1 sm:col-span-1">
               <header className="text-2xl font-bold mb-2 text-white">
                 Original Song.
@@ -257,8 +260,16 @@ function AdminPage() {
               className="bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out bg-opacity-50 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-10 w-full font-bold text-white"
               type="button"
               onClick={handleSubmit}
+              disabled={loading}
             >
-              Lock In
+              {loading ? (
+                <div
+                  className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                  role="status"
+                ></div>
+              ) : (
+                "Login"
+              )}
             </button>
           </div>
         </div>
