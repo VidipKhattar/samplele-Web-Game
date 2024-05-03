@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Samplele",
+  "name": "Samplele | Guess the rap song from its sample",
   "icons": [
     {
       "src": "favicon.ico",
