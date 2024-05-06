@@ -51,7 +51,9 @@ function AdminPage() {
       <tr key={post.id} className="border-b border-gray-200">
         <td className="py-4 px-6">{post.post_date}</td>
         <td className="py-4 px-6">{post.sampler_title}</td>
-        <td className="py-4 px-6">{post.sampled_title}</td>
+        <td className="py-4 px-6">
+          {post.sampled_title + " - " + post.sampled_artist}
+        </td>
         <td className="py-4 px-6">
           {post.deleting ? (
             <div className="flex justify-center items-center">
@@ -81,8 +83,8 @@ function AdminPage() {
           <thead>
             <tr>
               <th className="py-4 px-6">Post Date</th>
-              <th className="py-4 px-6">Sampler Title</th>
-              <th className="py-4 px-6">Sampled Title</th>
+              <th className="py-4 px-6">Sampler Song</th>
+              <th className="py-4 px-6">Original Song</th>
               <th className="py-4 px-6">Delete</th>
             </tr>
           </thead>

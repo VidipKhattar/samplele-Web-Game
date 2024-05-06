@@ -25,6 +25,7 @@ function AdminPage() {
   const [sampledSong, setSampledSong] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [disabledDates, setDisabledDates] = useState([]);
+  const [ytVideo, setYTVideo] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -52,6 +53,17 @@ function AdminPage() {
     return !disabledDates.some(
       (disabledDate) => disabledDate.toDateString() === dateString
     );
+  };
+
+  const handleYTChange = async (event) => {
+    const value = event.target.value;
+    // Regular expression to check if the value is a YouTube URL
+    const youtubeUrlPattern =
+      /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/;
+    if (youtubeUrlPattern.test(value)) {
+      setYTVideo(value);
+      console.log(value);
+    }
   };
 
   const handleSamplerSearchResultsChange = (results) => {
@@ -113,6 +125,10 @@ function AdminPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    if (ytVideo) {
+      console.log(ytVideo);
+    }
 
     const requiredFields = [
       "sampler_title",
@@ -207,10 +223,16 @@ function AdminPage() {
                 <li style={{ display: "flex", justifyContent: "center" }}>
                   <audio src={sampledSong.previewUrl} controls={true} />
                 </li>
-                <li>{sampledSong.genre}</li>
                 <li>
-                  {new Date(sampledSong.releaseDate).toLocaleDateString()}
+                  {sampledSong.genre +
+                    " - " +
+                    new Date(sampledSong.releaseDate).toLocaleDateString()}
                 </li>
+                <input
+                  placeholder="Youtube song"
+                  onChange={handleYTChange}
+                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-2 px-2"
+                ></input>
               </ul>
             </div>
 
@@ -229,9 +251,10 @@ function AdminPage() {
                 <li style={{ display: "flex", justifyContent: "center" }}>
                   <audio src={samplerSong.previewUrl} controls={true} />
                 </li>
-                <li>{samplerSong.genre}</li>
                 <li>
-                  {new Date(samplerSong.releaseDate).toLocaleDateString()}
+                  {samplerSong.genre +
+                    " - " +
+                    new Date(samplerSong.releaseDate).toLocaleDateString()}
                 </li>
               </ul>
             </div>
@@ -268,7 +291,7 @@ function AdminPage() {
                   role="status"
                 ></div>
               ) : (
-                "Login"
+                "Add samplele"
               )}
             </button>
           </div>

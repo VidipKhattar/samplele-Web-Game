@@ -293,7 +293,7 @@ function MainPage() {
                   src={gameInstance.sampler_artwork}
                   alt="Sampler Artwork"
                   className={`object-cover w-full h-full rounded-3xl ${
-                    correct || tryCount < 1 ? "" : "blur-xl"
+                    correct || tryCount < 1 ? "" : "blur-2xl"
                   }`}
                 />
                 {(correct || tryCount === 0) && (
@@ -403,10 +403,10 @@ function MainPage() {
                 </p>
               </div>
             </div>
-            <p className="animate-bounce text-gray-600 font-bold text-lg ">
+            <p className="animate-flash-green text-gray-600 font-bold text-lg ">
               come back tomorrow for a new song 👀
             </p>
-            <p className="text-gray-600 font-bold text-lg animate-bounce  ">
+            <p className="text-gray-600 font-bold text-lg animate-flash-green  ">
               in {countdown}
             </p>
           </div>

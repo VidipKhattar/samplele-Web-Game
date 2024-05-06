@@ -5,36 +5,44 @@ const SearchBar = ({ onSearchResultsChange }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [audioSrc, setAudioSrc] = useState("");
+  const [timeoutId, setTimeoutId] = useState(null);
 
   const handleChange = async (event) => {
     const value = event.target.value;
     setQuery(value);
 
-    try {
-      const response = await axios.get(
-        `https://itunes.apple.com/search?term=${value}&entity=song&limit=5`
-      );
+    clearTimeout(timeoutId);
 
-      const tracks = response.data.results.map((result) => ({
-        name: result.trackName,
-        artist: result.artistName,
-        previewUrl: result.previewUrl,
-        artwork: result.artworkUrl100,
-        album: result.collectionName,
-        genre: result.primaryGenreName,
-        releaseDate: result.releaseDate,
-      }));
+    const newTimeoutId = setTimeout(async () => {
+      try {
+        const response = await axios.get(
+          `https://itunes.apple.com/search?term=${value}&entity=song&limit=5`
+        );
 
-      const uniqueTracks = tracks.filter(
-        (track, index, self) =>
-          index ===
-          self.findIndex(
-            (t) => t.name === track.name && t.artist === track.artist
-          )
-      );
+        const tracks = response.data.results.map((result) => ({
+          name: result.trackName,
+          artist: result.artistName,
+          previewUrl: result.previewUrl,
+          artwork: result.artworkUrl100,
+          album: result.collectionName,
+          genre: result.primaryGenreName,
+          releaseDate: result.releaseDate,
+        }));
 
-      setSuggestions(uniqueTracks);
-    } catch (error) {}
+        const uniqueTracks = tracks.filter(
+          (track, index, self) =>
+            index ===
+            self.findIndex(
+              (t) => t.name === track.name && t.artist === track.artist
+            )
+        );
+
+        setSuggestions(uniqueTracks);
+      } catch (error) {
+        console.error("Error fetching song suggestions:", error);
+      }
+    }, 300);
+    setTimeoutId(newTimeoutId);
   };
 
   const handleSelect = (song) => {
