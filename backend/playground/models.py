@@ -21,3 +21,12 @@ class SongPost(models.Model):
         return (
             f"{self.sampler_title} - {self.sampled_title}"  # Adjust this line as needed
         )
+
+
+class AudioFile(models.Model):
+    id = models.AutoField(primary_key=True)
+    audio_file = models.FileField(upload_to="audio_files/")
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.id
