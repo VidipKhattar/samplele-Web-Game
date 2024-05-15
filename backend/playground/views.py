@@ -1,60 +1,89 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
-from .models import SongPost, AudioFile
-from .serializers import SongPostSerializer, AudioFileSerializer
-from django.conf import settings
 from django.contrib.auth import authenticate, login
+from django.utils import timezone
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from django.conf import settings
 from pytube import YouTube
+import boto3
+from pydub import AudioSegment
+import os
+from .models import SongPost
+from .serializers import SongPostSerializer
 
-from django.core.files.base import ContentFile
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .models import AudioFile
-from .serializers import AudioFileSerializer
-from pytube import YouTube
+
+def getPresignedURL(song_name):
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+    )
+    try:
+        bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+        key = "songs/" + song_name
+        url = s3.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": bucket_name, "Key": key},
+            ExpiresIn=48 * 3600,
+        )
+        return url
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def fetch_and_process_audio_from_youtube(youtube_url, sample_start_time):
+    yt = YouTube(youtube_url)
+    video_title = yt.title
+    filename = f"{video_title}.mp3"
+    folder_name = "songs"
+    audio_path = (
+        yt.streams.filter(only_audio=True)
+        .first()
+        .download(output_path=folder_name, filename=filename)
+    )
+    audio = AudioSegment.from_file(audio_path)
+    start_time = sample_start_time * 1000
+    end_time = (sample_start_time + 30) * 1000
+    modified_audio = audio[start_time:end_time]
+    modified_audio_path = os.path.join(folder_name, filename)
+    modified_audio.export(modified_audio_path, format="mp3")
+
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+    )
+    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+    object_key = f"{folder_name}/{filename}"
+
+    with open(modified_audio_path, "rb") as file:
+        s3.upload_fileobj(file, bucket_name, object_key)
+    # os.remove(modified_audio_path)
+    return filename
 
 
 class YoutubeAPIView(APIView):
     def post(self, request):
-        if request.method == "POST":
-            youtube_url = request.data.get("youtubeUrl")
-            try:
-                # object creation using YouTube
-                yt = YouTube(youtube_url)
-
-                # Get all streams and filter for mp3 files with low quality
-                mp3_streams = (
-                    yt.streams.filter(only_audio=True, file_extension="mp4")
-                    .order_by("abr")
-                    .desc()
-                )
-
-                # Get the lowest quality mp3 stream
-                d_audio = mp3_streams.last()
-
-                # Download the audio and save it to the backend
-                audio_data = d_audio.download()
-
-                # Create a new AudioFile instance and save the downloaded audio
-                audio_file = AudioFile.objects.create()
-                audio_file.audio_file.save(f"{yt.title}.mp3", ContentFile(audio_data))
-
-                # Serialize the audio file instance
-                serializer = AudioFileSerializer(audio_file)
-
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        youtube_url = request.data.get("ytVideoVar")
+        sample_start_time = request.data.get("timeValueVar")
+        try:
+            audio_data = fetch_and_process_audio_from_youtube(
+                youtube_url, sample_start_time
+            )
+            return JsonResponse(
+                {"title": audio_data},
+                status=status.HTTP_201_CREATED,
+            )
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        audio_files = AudioFile.objects.all()
-        serializer = AudioFileSerializer(audio_files, many=True)
-        return Response(serializer.data)
+        song_name = request.GET.get("title")
+        presigned_url = getPresignedURL(song_name)
+        return JsonResponse({"presigned_url": presigned_url})
 
 
 class LoginInfoAPIView(APIView):
@@ -89,6 +118,28 @@ class SongPostListCreate(APIView):
     def delete(self, request, *args, **kwargs):
         SongPost.objects.all().delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SongPostToday(APIView):
+    def get(self, request, format=None):
+        current_date = timezone.now().date()
+        queryset = SongPost.objects.filter(post_date=current_date)
+        serializer = SongPostSerializer(queryset, many=True)
+        if queryset.count() != 1:
+            return Response(
+                {"message": "Expected one song, found none or multiple"}, status=400
+            )
+        serializer = SongPostSerializer(queryset.first())
+        song_post = get_object_or_404(SongPost, pk=serializer.data.get("id"))
+        sampled_audio = serializer.data.get("sampled_audio")
+        sampler_audio = serializer.data.get("sampler_audio")
+        if not sampled_audio.startswith("http"):
+            song_post.sampled_audio = getPresignedURL(sampled_audio)
+            song_post.sampler_audio = getPresignedURL(sampler_audio)
+            song_post.save()
+        serializer = SongPostSerializer(song_post)
+
+        return Response(serializer.data)
 
 
 class SongPostRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
