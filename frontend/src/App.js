@@ -1,6 +1,5 @@
 import React from "react";
 import MainPage from "./pages/mainPage";
-import Youtube from "./pages/youtube";
 import Login from "./pages/login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -10,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/admin" element={<Login />} />
-        <Route path="/easteregg" element={<Youtube></Youtube>} />
+        <Route path="/easteregg" element={<div>lololololol</div>} />
       </Routes>
     </BrowserRouter>
   );
