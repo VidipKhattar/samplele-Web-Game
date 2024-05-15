@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import SongPost
 
 
-# Define a custom admin form if needed
 class SongPostAdmin(admin.ModelAdmin):
     list_display = (
         "sampler_title",
@@ -26,5 +25,4 @@ class SongPostAdmin(admin.ModelAdmin):
     )
 
 
-# Register the SongPost model with the custom admin form
 admin.site.register(SongPost, SongPostAdmin)
