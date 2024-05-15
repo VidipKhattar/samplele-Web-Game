@@ -47,8 +47,15 @@ function AdminPage() {
   };
 
   const renderSongPosts = () => {
+    const today = new Date();
+    const todayDateString = today.toISOString().split("T")[0];
     return songPosts.map((post) => (
-      <tr key={post.id} className="border-b border-gray-200">
+      <tr
+        key={post.id}
+        className={`border-b border-gray-200 ${
+          post.post_date === todayDateString ? "bg-yellow-200" : ""
+        }`}
+      >
         <td className="py-4 px-6">{post.post_date}</td>
         <td className="py-4 px-6">{post.sampler_title}</td>
         <td className="py-4 px-6">

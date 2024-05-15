@@ -12,9 +12,13 @@ class SongPost(models.Model):
     sampler_artwork = models.URLField()
     sampled_artwork = models.URLField(blank=True)
     sampler_audio = models.CharField(max_length=900)
+    sampler_audio_youtube_link = models.URLField(blank=True)
+    sampler_audio_start_time = models.URLField(blank=True)
     sampled_audio = models.CharField(max_length=900)
-    sampler_year = models.IntegerField()
-    sampled_year = models.IntegerField(blank=True)
+    sampled_audio_youtube_link = models.URLField(blank=True)
+    sampled_audio_start_time = models.URLField(blank=True)
+    sampler_year = models.CharField()
+    sampled_year = models.CharField(blank=True)
     post_date = models.DateField(unique=True)
 
     def __str__(self):

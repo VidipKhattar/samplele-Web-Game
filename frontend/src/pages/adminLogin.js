@@ -16,7 +16,11 @@ function AdminPage() {
     sampler_artwork: "",
     sampled_artwork: "",
     sampler_audio: "",
+    sampler_audio_youtube_link: "",
+    sampler_audio_start_time: "",
     sampled_audio: "",
+    sampled_audio_youtube_link: "",
+    sampled_audio_start_time: "",
     sampler_year: "",
     sampled_year: "",
     post_date: "",
@@ -62,10 +66,6 @@ function AdminPage() {
       setLoading(true);
       processAndUpdateFormData(ytVideo, timeValue)
         .then((res) => {
-          console.log(res);
-          console.log(res.title);
-          console.log(res.presigned_url);
-          console.log("enter here");
           setSampledSong((prevSampledSong) => ({
             ...prevSampledSong,
             previewUrl: res.presigned_url, // Assuming the property name is previewUrl
@@ -91,16 +91,10 @@ function AdminPage() {
       setLoadingSampler(true);
       processAndUpdateFormData(ytVideoSampler, timeValueSampler)
         .then((res) => {
-          console.log(res);
-          console.log(res.title);
-          console.log(res.presigned_url);
-          console.log("enter here");
           setSamplerSong((prevSamplerSong) => ({
             ...prevSamplerSong,
             previewUrl: res.presigned_url,
           }));
-          console.log(formData);
-          console.log(formData.sampler_title);
           setFormData((prevFormData) => ({
             ...prevFormData,
             sampler_audio: res.title,
@@ -116,7 +110,6 @@ function AdminPage() {
 
   const processAndUpdateFormData = async (ytVideoVar, timeValueVar) => {
     try {
-      console.log("what");
       const post_response = await axios.post(
         process.env.NODE_ENV === "production"
           ? process.env.REACT_APP_API_BASE_URL_PROD + "/youtube/"
@@ -124,22 +117,13 @@ function AdminPage() {
         { ytVideoVar, timeValueVar }
       );
 
-      console.log(post_response);
-
       const { title } = post_response.data;
-      console.log(title);
-
       const ending = "/youtube/?title=" + encodeURIComponent(title);
-      console.log(ending);
       const get_response = await axios.get(
         process.env.NODE_ENV === "production"
           ? process.env.REACT_APP_API_BASE_URL_PROD + ending
           : process.env.REACT_APP_API_BASE_URL_DEV + ending
       );
-
-      console.log(get_response.data.presigned_url);
-      console.log(get_response);
-
       return { presigned_url: get_response.data.presigned_url, title: title };
     } catch (error) {
       console.error("Error converting YouTube video:", error);
@@ -154,24 +138,19 @@ function AdminPage() {
       if (youtubeUrlPattern.test(value)) {
         if (name == "youtubeSong") {
           setYTVideo(value);
-          console.log(value);
         } else if (name == "youtubeSongSampler") {
           setYTVideoSampler(value);
-          console.log("sampler yt: " + value);
         }
       }
     } else if (name.includes("time")) {
-      console.log(value);
       const timePattern = /^\d+:\d{2}$/;
       if (timePattern.test(value)) {
         const [minutes, seconds] = value.split(":").map(Number);
         const totalTimeInSeconds = minutes * 60 + seconds;
         if (name == "time") {
           setTimeValue(totalTimeInSeconds);
-          console.log(totalTimeInSeconds);
         } else if (name == "timeSampler") {
           setTimeValueSampler(totalTimeInSeconds);
-          console.log("sampler time: " + totalTimeInSeconds);
         }
       }
     }
@@ -215,9 +194,7 @@ function AdminPage() {
     e.preventDefault();
     setLoading(true);
     setLoadingSampler(true);
-    console.log("Form Data before updating:", formData); // Log form data before update
 
-    console.log("Form Data before validation:", formData); // Log form data before validation
     const requiredFields = [
       "sampler_title",
       "sampled_title",
@@ -231,12 +208,10 @@ function AdminPage() {
       alert(`The following fields are required: ${missingFields.join(", ")}`);
       setLoading(false);
       setLoadingSampler(false);
-      console.log(formData);
       return;
     }
 
     try {
-      console.log("Submitting Form Data:", formData); // Log form data before submission
       await axios.post(
         process.env.NODE_ENV === "production"
           ? `${process.env.REACT_APP_API_BASE_URL_PROD}/songposts/`

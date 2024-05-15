@@ -83,9 +83,7 @@ function MainPage() {
           : process.env.REACT_APP_API_BASE_URL_DEV + "/songposttoday"
       )
       .then((res) => {
-        console.log(res.data);
         const foundSong = res.data;
-        console.log(foundSong);
         if (foundSong) {
           setGameInstance(foundSong);
           setSampledSongAudio(new Audio(foundSong.sampled_audio));
