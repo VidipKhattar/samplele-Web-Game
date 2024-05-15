@@ -3,10 +3,17 @@
 @tailwind utilities;
 
 
+
 @layer base {
   body {
     @apply bg-gray-600
   }
+
 }
+
+body {
+  font-family: 'IBMPIexMono-Regular', monospace, 'IBMPlexMono-Bold' ;
+}
+
 
 

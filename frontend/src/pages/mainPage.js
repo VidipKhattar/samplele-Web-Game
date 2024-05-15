@@ -64,13 +64,6 @@ function MainPage() {
   }, []);
 
   useEffect(() => {
-    const today = new Date();
-    const formattedDate =
-      today.getFullYear() +
-      "-" +
-      ("0" + (today.getMonth() + 1)).slice(-2) +
-      "-" +
-      ("0" + today.getDate()).slice(-2);
     if (storedTries) {
       setTryCount(parseInt(storedTries));
     }
@@ -188,7 +181,7 @@ function MainPage() {
         </header>
         {tryCount < 4 ||
           (!correct && (
-            <h2 className="text-gray-600 text-lg text-lg md:text-lg  my-2">
+            <h2 className="text-gray-600 font-semibold md:text-lg my-2">
               listen to the sample to try and guess which song samples it.
             </h2>
           ))}
@@ -285,7 +278,7 @@ function MainPage() {
 
         <div className="container mx-auto 2xl:px-96 xl:px-64 lg:px-32 md:px-0">
           <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-4 rounded-3xl shadow-lg grid grid-cols-1 gap-4 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 min-[520px]:grid-cols-2 flex flex-col md:flex-row justify-center items-center">
-            <div className="flex justify-center items-center md:block sm:block">
+            <div className="flex justify-center items-center md:block sm:block lg:col-span-1 md:col-span-1 sm:col-span-1 ">
               <div className="relative bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-3xl shadow-lg w-48 h-48 flex justify-center items-center">
                 <img
                   src={gameInstance.sampler_artwork}
@@ -315,18 +308,18 @@ function MainPage() {
               </div>
             </div>
 
-            <div className="font-bold text-center text-gray-600 sm:pl-4 min-[520px]:text-left">
+            <div className="font-bold text-center text-gray-600 sm:pl-4 min-[520px]:text-left lg:col-span-2 md:col-span-2 :col-span-2 ">
               <p
-                className={`text-5xl pb-2 ${
+                className={`text-2xl pb-2 ${
                   tryCount < 1 || correct
                     ? "animate-flash-green duration-2000"
-                    : "blur-md "
+                    : "blur-md"
                 }`}
               >
                 {gameInstance.sampler_title}
               </p>
               <p
-                className={`text-xl pb-2 ${
+                className={`text-md pb-2 ${
                   tryCount < 2 || correct
                     ? "animate-flash-green duration-2000"
                     : "blur-sm"
