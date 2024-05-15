@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import playButton from "../assets/playbutton.svg";
 import pauseButton from "../assets/pausebutton.svg";
+import reloadButton from "../assets/reloadbutton.svg";
 import axios from "axios";
 import SearchBar from "../components/searchBar";
 import Loading from "./loading";
@@ -12,11 +13,11 @@ import { Analytics } from "@vercel/analytics/react";
 function MainPage() {
   const [gameInstance, setGameInstance] = useState({});
   const [loading, setLoading] = useState(true);
-  const [isPlayingSample, setIsPlayingSample] = useState(false);
+  const [isPlayingOriginal, setIsPlayingOriginal] = useState(false);
   const [isPlayingSampler, setIsPlayingSampler] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
-  const [sampledSongAudio, setSampledSongAudio] = useState(new Audio());
+  const [originalSongAudio, setOriginalSongAudio] = useState(new Audio());
   const [samplerSongAudio, setSamplerSongAudio] = useState(new Audio());
   const [userAnswer, setUserAnswer] = useState("");
   const [gameAnswer, setGameAnswer] = useState("");
@@ -86,7 +87,7 @@ function MainPage() {
         const foundSong = res.data;
         if (foundSong) {
           setGameInstance(foundSong);
-          setSampledSongAudio(new Audio(foundSong.sampled_audio));
+          setOriginalSongAudio(new Audio(foundSong.sampled_audio));
           setSamplerSongAudio(new Audio(foundSong.sampler_audio));
           setTriedSongs([]);
           setGameAnswer(
@@ -140,35 +141,32 @@ function MainPage() {
     }
   };
 
-  const handleButtonClick = () => {
-    console.log("press");
-    if (!isPlayingSample) {
-      console.log("true");
-      setIsPlayingSample(true);
+  const handleOriginalButtonClick = () => {
+    if (!isPlayingOriginal) {
       samplerSongAudio.pause();
       setIsPlayingSampler(false);
-      sampledSongAudio.play();
-      sampledSongAudio.onended = () => {
-        setIsPlayingSample(false);
+      originalSongAudio.play();
+      setIsPlayingOriginal(true);
+      originalSongAudio.onended = () => {
+        setIsPlayingOriginal(false);
       };
     } else {
-      setIsPlayingSample(false);
-      //sampledSongAudio.pause();
-      sampledSongAudio.currentTime = 0;
+      originalSongAudio.currentTime = 0;
     }
   };
 
   const handleSamplerButtonClick = () => {
     if (!isPlayingSampler) {
+      originalSongAudio.pause();
       setIsPlayingSampler(true);
-      sampledSongAudio.pause();
-      setIsPlayingSample(false);
+
       samplerSongAudio.play();
+      setIsPlayingOriginal(false);
+
       samplerSongAudio.onended = () => {
         setIsPlayingSampler(false);
       };
     } else {
-      setIsPlayingSampler(false);
       samplerSongAudio.currentTime = 0;
     }
   };
@@ -245,16 +243,15 @@ function MainPage() {
               >
                 Lock In
               </button>
-
               <button
                 className="flex items-center justify-center bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg hover:bg-opacity-50 transition-colors duration-300"
                 type="button"
-                onClick={handleButtonClick}
+                onClick={handleOriginalButtonClick}
               >
-                {isPlayingSample ? (
-                  <img src={pauseButton} alt="Logo" />
+                {isPlayingOriginal ? (
+                  <img src={reloadButton} alt="Reload" />
                 ) : (
-                  <img src={playButton} alt="Logo" />
+                  <img src={playButton} alt="Play" />
                 )}
               </button>
             </div>
@@ -309,7 +306,7 @@ function MainPage() {
                     onClick={handleSamplerButtonClick}
                   >
                     {isPlayingSampler ? (
-                      <img src={pauseButton} alt="Pause" className="w-8 h-8" />
+                      <img src={reloadButton} alt="Pause" className="w-8 h-8" />
                     ) : (
                       <img src={playButton} alt="Play" className="w-8 h-8" />
                     )}
@@ -371,10 +368,10 @@ function MainPage() {
                 <button
                   className="absolute bg-white bg-opacity-5 backdrop-filter backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-55 duration-300 w-16 h-16 flex justify-center items-center"
                   type="button"
-                  onClick={handleButtonClick}
+                  onClick={handleOriginalButtonClick}
                 >
-                  {isPlayingSample ? (
-                    <img src={pauseButton} alt="Pause" className="w-8 h-8" />
+                  {isPlayingOriginal ? (
+                    <img src={reloadButton} alt="Pause" className="w-8 h-8" />
                   ) : (
                     <img src={playButton} alt="Play" className="w-8 h-8" />
                   )}
