@@ -79,13 +79,13 @@ function MainPage() {
     axios
       .get(
         process.env.NODE_ENV === "production"
-          ? process.env.REACT_APP_API_BASE_URL_PROD + "/songposts"
-          : process.env.REACT_APP_API_BASE_URL_DEV + "/songposts"
+          ? process.env.REACT_APP_API_BASE_URL_PROD + "/songposttoday"
+          : process.env.REACT_APP_API_BASE_URL_DEV + "/songposttoday"
       )
       .then((res) => {
-        const foundSong = res.data.find(
-          (item) => item.post_date === formattedDate
-        );
+        console.log(res.data);
+        const foundSong = res.data;
+        console.log(foundSong);
         if (foundSong) {
           setGameInstance(foundSong);
           setSampledSongAudio(new Audio(foundSong.sampled_audio));

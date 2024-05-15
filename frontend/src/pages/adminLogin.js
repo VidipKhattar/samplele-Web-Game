@@ -26,7 +26,11 @@ function AdminPage() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [disabledDates, setDisabledDates] = useState([]);
   const [ytVideo, setYTVideo] = useState("");
+  const [timeValue, setTimeValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingSampler, setLoadingSampler] = useState(false);
+  const [ytVideoSampler, setYTVideoSampler] = useState("");
+  const [timeValueSampler, setTimeValueSampler] = useState("");
 
   useEffect(() => {
     axios
@@ -48,101 +52,177 @@ function AdminPage() {
   }, []);
 
   const filterDisabledDates = (date) => {
-    const dateString = date.toDateString();
-
     return !disabledDates.some(
-      (disabledDate) => disabledDate.toDateString() === dateString
+      (disabledDate) => disabledDate.toDateString() === date.toDateString()
     );
   };
 
+  useEffect(() => {
+    if (ytVideo && timeValue) {
+      setLoading(true);
+      processAndUpdateFormData(ytVideo, timeValue)
+        .then((res) => {
+          console.log(res);
+          console.log(res.title);
+          console.log(res.presigned_url);
+          console.log("enter here");
+          setSampledSong((prevSampledSong) => ({
+            ...prevSampledSong,
+            previewUrl: res.presigned_url, // Assuming the property name is previewUrl
+          }));
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            sampled_title: formData.sampled_title
+              ? prevFormData.sampled_title
+              : res.title,
+            sampled_audio: res.title,
+          }));
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error processing and updating form data:", error);
+          setLoading(false);
+        });
+    }
+  }, [ytVideo, timeValue]);
+
+  useEffect(() => {
+    if (ytVideoSampler && timeValueSampler) {
+      setLoadingSampler(true);
+      processAndUpdateFormData(ytVideoSampler, timeValueSampler)
+        .then((res) => {
+          console.log(res);
+          console.log(res.title);
+          console.log(res.presigned_url);
+          console.log("enter here");
+          setSamplerSong((prevSamplerSong) => ({
+            ...prevSamplerSong,
+            previewUrl: res.presigned_url,
+          }));
+          console.log(formData);
+          console.log(formData.sampler_title);
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            sampler_audio: res.title,
+          }));
+          setLoadingSampler(false);
+        })
+        .catch((error) => {
+          console.error("Error processing and updating form data:", error);
+          setLoadingSampler(false);
+        });
+    }
+  }, [ytVideoSampler, timeValueSampler]);
+
+  const processAndUpdateFormData = async (ytVideoVar, timeValueVar) => {
+    try {
+      console.log("what");
+      const post_response = await axios.post(
+        process.env.NODE_ENV === "production"
+          ? process.env.REACT_APP_API_BASE_URL_PROD + "/youtube/"
+          : process.env.REACT_APP_API_BASE_URL_DEV + "/youtube/",
+        { ytVideoVar, timeValueVar }
+      );
+
+      console.log(post_response);
+
+      const { title } = post_response.data;
+      console.log(title);
+
+      const ending = "/youtube/?title=" + encodeURIComponent(title);
+      console.log(ending);
+      const get_response = await axios.get(
+        process.env.NODE_ENV === "production"
+          ? process.env.REACT_APP_API_BASE_URL_PROD + ending
+          : process.env.REACT_APP_API_BASE_URL_DEV + ending
+      );
+
+      console.log(get_response.data.presigned_url);
+      console.log(get_response);
+
+      return { presigned_url: get_response.data.presigned_url, title: title };
+    } catch (error) {
+      console.error("Error converting YouTube video:", error);
+    }
+  };
+
   const handleYTChange = async (event) => {
-    const value = event.target.value;
-    // Regular expression to check if the value is a YouTube URL
-    const youtubeUrlPattern =
-      /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/;
-    if (youtubeUrlPattern.test(value)) {
-      setYTVideo(value);
+    const { name, value } = event.target;
+    if (name.includes("youtubeSong")) {
+      const youtubeUrlPattern =
+        /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/;
+      if (youtubeUrlPattern.test(value)) {
+        if (name == "youtubeSong") {
+          setYTVideo(value);
+          console.log(value);
+        } else if (name == "youtubeSongSampler") {
+          setYTVideoSampler(value);
+          console.log("sampler yt: " + value);
+        }
+      }
+    } else if (name.includes("time")) {
       console.log(value);
+      const timePattern = /^\d+:\d{2}$/;
+      if (timePattern.test(value)) {
+        const [minutes, seconds] = value.split(":").map(Number);
+        const totalTimeInSeconds = minutes * 60 + seconds;
+        if (name == "time") {
+          setTimeValue(totalTimeInSeconds);
+          console.log(totalTimeInSeconds);
+        } else if (name == "timeSampler") {
+          setTimeValueSampler(totalTimeInSeconds);
+          console.log("sampler time: " + totalTimeInSeconds);
+        }
+      }
     }
   };
 
   const handleSamplerSearchResultsChange = (results) => {
-    if (results) {
-      setSamplerSong(results);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        sampler_title: results.name || "",
-        sampler_album: results.album || "",
-        sampler_artist: results.artist || "",
-        sampler_artwork: results.artwork || "",
-        sampler_audio: results.previewUrl || "",
-        sampler_year: results.releaseDate
-          ? results.releaseDate.substring(0, 4)
-          : "",
-      }));
-    } else {
-      setSamplerSong({});
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        sampler_title: "",
-        sampler_album: "",
-        sampler_artist: "",
-        sampler_artwork: "",
-        sampler_audio: "",
-        sampler_year: "",
-      }));
-    }
+    const { name, album, artist, artwork, previewUrl, releaseDate } =
+      results || {};
+
+    setSamplerSong(results || {});
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      sampler_title: name ?? "",
+      sampler_album: album ?? "",
+      sampler_artist: artist ?? "",
+      sampler_artwork: artwork ?? "",
+      sampler_audio: previewUrl ?? "",
+      sampler_year: releaseDate?.substring(0, 4) ?? "",
+    }));
   };
 
   const handleSampleSearchResultsChange = (results) => {
-    if (results) {
-      setSampledSong(results);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        sampled_title: results.name || "",
-        sampled_album: results.album || "",
-        sampled_artist: results.artist || "",
-        sampled_artwork: results.artwork || "",
-        sampled_audio: results.previewUrl || "",
-        sampled_year: results.releaseDate
-          ? results.releaseDate.substring(0, 4)
-          : "",
-      }));
-    } else {
-      setSampledSong({});
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        sampled_title: "",
-        sampled_album: "",
-        sampled_artist: "",
-        sampled_artwork: "",
-        sampled_audio: "",
-        sampled_year: "",
-      }));
-    }
+    const { name, album, artist, artwork, previewUrl, releaseDate } =
+      results || {};
+
+    setSampledSong(results || {});
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      sampled_title: name ?? "",
+      sampled_album: album ?? "",
+      sampled_artist: artist ?? "",
+      sampled_artwork: artwork ?? "",
+      sampled_audio: previewUrl ?? "",
+      sampled_year: releaseDate?.substring(0, 4) ?? "",
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setLoadingSampler(true);
+    console.log("Form Data before updating:", formData); // Log form data before update
 
-    if (ytVideo) {
-      console.log(ytVideo);
-    }
-
+    console.log("Form Data before validation:", formData); // Log form data before validation
     const requiredFields = [
       "sampler_title",
       "sampled_title",
-      "sampler_album",
-      "sampled_album",
-      "sampler_artist",
-      "sampled_artist",
-      "sampler_artwork",
-      "sampled_artwork",
       "sampler_audio",
       "sampled_audio",
-      "sampler_year",
-      "sampled_year",
       "post_date",
     ];
     const missingFields = requiredFields.filter((field) => !formData[field]);
@@ -150,37 +230,26 @@ function AdminPage() {
     if (missingFields.length > 0) {
       alert(`The following fields are required: ${missingFields.join(", ")}`);
       setLoading(false);
+      setLoadingSampler(false);
+      console.log(formData);
       return;
     }
 
     try {
+      console.log("Submitting Form Data:", formData); // Log form data before submission
       await axios.post(
         process.env.NODE_ENV === "production"
           ? `${process.env.REACT_APP_API_BASE_URL_PROD}/songposts/`
           : `${process.env.REACT_APP_API_BASE_URL_DEV}/songposts/`,
         formData
       );
-      setFormData({
-        sampler_title: "",
-        sampled_title: "",
-        sampler_album: "",
-        sampled_album: "",
-        sampler_artist: "",
-        sampled_artist: "",
-        sampler_artwork: "",
-        sampled_artwork: "",
-        sampler_audio: "",
-        sampled_audio: "",
-        sampler_year: "",
-        sampled_year: "",
-        post_date: "",
-      });
-
       setLoading(false);
-      window.location.reload();
+      setLoadingSampler(false);
+      //window.location.reload();
     } catch (error) {
       alert(error + " date could be taken");
       setLoading(false);
+      setLoadingSampler(false);
     }
   };
 
@@ -231,7 +300,16 @@ function AdminPage() {
                 <input
                   placeholder="Youtube song"
                   onChange={handleYTChange}
-                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-2 px-2"
+                  name="youtubeSong"
+                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-1 m-2"
+                  disabled={loading || process.env.NODE_ENV === "production"}
+                ></input>
+                <input
+                  placeholder="Time"
+                  onChange={handleYTChange}
+                  name="time"
+                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-1 m-2"
+                  disabled={loading || process.env.NODE_ENV === "production"}
                 ></input>
               </ul>
             </div>
@@ -256,6 +334,24 @@ function AdminPage() {
                     " - " +
                     new Date(samplerSong.releaseDate).toLocaleDateString()}
                 </li>
+                <input
+                  placeholder="Youtube song"
+                  onChange={handleYTChange}
+                  name="youtubeSongSampler"
+                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-1 m-2"
+                  disabled={
+                    loadingSampler || process.env.NODE_ENV === "production"
+                  }
+                ></input>
+                <input
+                  placeholder="Time"
+                  onChange={handleYTChange}
+                  name="timeSampler"
+                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-1 m-2"
+                  disabled={
+                    loadingSampler || process.env.NODE_ENV === "production"
+                  }
+                ></input>
               </ul>
             </div>
 
@@ -283,9 +379,9 @@ function AdminPage() {
               className="bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out bg-opacity-50 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-10 w-full font-bold text-white"
               type="button"
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={loading || loadingSampler}
             >
-              {loading ? (
+              {loading || loadingSampler ? (
                 <div
                   className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
                   role="status"
