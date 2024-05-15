@@ -141,7 +141,9 @@ function MainPage() {
   };
 
   const handleButtonClick = () => {
+    console.log("press");
     if (!isPlayingSample) {
+      console.log("true");
       setIsPlayingSample(true);
       samplerSongAudio.pause();
       setIsPlayingSampler(false);
@@ -151,7 +153,8 @@ function MainPage() {
       };
     } else {
       setIsPlayingSample(false);
-      sampledSongAudio.pause();
+      //sampledSongAudio.pause();
+      sampledSongAudio.currentTime = 0;
     }
   };
 
@@ -166,7 +169,7 @@ function MainPage() {
       };
     } else {
       setIsPlayingSampler(false);
-      samplerSongAudio.pause();
+      samplerSongAudio.currentTime = 0;
     }
   };
 
