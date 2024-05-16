@@ -308,7 +308,7 @@ function MainPage() {
               </div>
             </div>
 
-            <div className="font-bold text-center text-gray-600 sm:pl-4 min-[520px]:text-left lg:col-span-2 md:col-span-2 :col-span-2 ">
+            <div className="font-bold text-center text-gray-600 sm:pl-4 min-[520px]:text-left lg:col-span-2 md:col-span-2 sm:col-span-2 ">
               <p
                 className={`text-2xl pb-2 ${
                   tryCount < 1 || correct

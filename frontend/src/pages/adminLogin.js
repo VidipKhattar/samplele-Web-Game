@@ -220,7 +220,7 @@ function AdminPage() {
       );
       setLoading(false);
       setLoadingSampler(false);
-      //window.location.reload();
+      window.location.reload();
     } catch (error) {
       alert(error + " date could be taken");
       setLoading(false);
