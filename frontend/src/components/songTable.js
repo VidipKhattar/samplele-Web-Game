@@ -13,7 +13,7 @@ function AdminPage() {
           : `${process.env.REACT_APP_API_BASE_URL_DEV}/songposts`
       )
       .then((response) => {
-        let sortedData = response.data.sort((a, b) => {
+        response.data.sort((a, b) => {
           let dateA = new Date(a.post_date);
           let dateB = new Date(b.post_date);
           return dateA - dateB;

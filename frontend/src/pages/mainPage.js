@@ -27,6 +27,7 @@ function MainPage() {
   const storedTries = Cookies.get("tries");
   const storedCorrect = Cookies.get("correct");
   const [countdown, setCountdown] = useState("");
+  const [jumbledAnswer, setJumbledAnswer] = useState("");
 
   function midnightExpiration() {
     const currentDate = new Date();
@@ -86,6 +87,7 @@ function MainPage() {
           setGameAnswer(
             foundSong.sampler_title + "-" + foundSong.sampler_artist
           );
+          setJumbledAnswer(jumbleString(foundSong.sampler_title));
         }
         setLoading(false);
       })
@@ -164,6 +166,21 @@ function MainPage() {
     }
   };
 
+  function jumbleString(str) {
+    const words = str.split(" ");
+
+    const jumbledWords = words.map((word) => {
+      const chars = word.split("");
+      for (let i = chars.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [chars[i], chars[j]] = [chars[j], chars[i]];
+      }
+      return chars.join("");
+    });
+    const jumbledStr = jumbledWords.join(" ");
+    return jumbledStr;
+  }
+
   if (loading) {
     return <Loading></Loading>;
   } else if (!gameInstance || Object.keys(gameInstance).length === 0) {
@@ -228,7 +245,7 @@ function MainPage() {
                 className={`bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out ${
                   correct ? "bg-green-500" : "bg-opacity-50 bg-blue-500"
                 } 
-                ${isShaking ? "animate-shake bg-red-500" : ""}
+                ${isShaking ? "animate-shake-wrong  bg-red-500" : ""}
                 ${!userAnswer ? "pointer-events-none opacity-50" : ""} 
                 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg w-full font-bold text-white`}
                 onClick={checkSong}
@@ -284,7 +301,15 @@ function MainPage() {
                   src={gameInstance.sampler_artwork}
                   alt="Sampler Artwork"
                   className={`object-cover w-full h-full rounded-3xl ${
-                    correct || tryCount < 1 ? "" : "blur-2xl"
+                    correct || tryCount < 1
+                      ? ""
+                      : tryCount < 2
+                      ? "blur-sm"
+                      : tryCount < 3
+                      ? "blur-md"
+                      : tryCount < 4
+                      ? "blur-lg"
+                      : "blur-2xl"
                   }`}
                 />
                 {(correct || tryCount === 0) && (
@@ -316,7 +341,11 @@ function MainPage() {
                     : "blur-md"
                 }`}
               >
-                {gameInstance.sampler_title}
+                {tryCount < 1 || correct ? (
+                  <span>{gameInstance.sampler_title}</span>
+                ) : (
+                  <span>{jumbledAnswer}</span>
+                )}
               </p>
               <p
                 className={`text-md pb-2 ${

@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
+        "shake-wrong": "shake-wrong 0.5s",
         "gradient-xy": "gradient-xy 10s ease infinite",
         "flash-green": "flash-green 2s linear",
       },
@@ -21,6 +22,14 @@ module.exports = {
             "background-size": "200% 200%",
             "background-position": "right center",
           },
+        },
+        "shake-wrong": {
+          "0%": { transform: "translateX(0)" },
+          "20%": { transform: "translateX(-10px)" },
+          "40%": { transform: "translateX(10px)" },
+          "60%": { transform: "translateX(-10px)" },
+          "80%": { transform: "translateX(10px)" },
+          "100%": { transform: "translateX(0)" },
         },
       },
     },
