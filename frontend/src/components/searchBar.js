@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const SearchBar = ({ onSearchResultsChange }) => {
+const SearchBar = ({ onSearchResultsChange, userAnswer }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [audioSrc, setAudioSrc] = useState("");
   const [timeoutId, setTimeoutId] = useState(null);
+
+  useEffect(() => {
+    if (userAnswer == "") {
+      setQuery("");
+    }
+  }, [userAnswer]);
 
   const handleChange = async (event) => {
     const value = event.target.value;
@@ -47,7 +52,6 @@ const SearchBar = ({ onSearchResultsChange }) => {
 
   const handleSelect = (song) => {
     setQuery(`${song.name} - ${song.artist}`);
-    setAudioSrc(song.previewUrl);
     onSearchResultsChange(song);
     setSuggestions([]);
   };
@@ -55,7 +59,6 @@ const SearchBar = ({ onSearchResultsChange }) => {
   const handleClearSearch = () => {
     setQuery("");
     setSuggestions([]);
-    setAudioSrc("");
     onSearchResultsChange("");
   };
 
@@ -90,7 +93,6 @@ const SearchBar = ({ onSearchResultsChange }) => {
           </button>
         )}
       </div>
-      {audioSrc && <audio src={audioSrc} controls={false}></audio>}
       {query && suggestions.length > 0 && (
         <ul className="font-semibold text-gray-600  absolute top-full left-0 z-40 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg">
           {suggestions.map((song, index) => (

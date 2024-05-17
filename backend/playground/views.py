@@ -126,9 +126,7 @@ class SongPostToday(APIView):
         queryset = SongPost.objects.filter(post_date=current_date)
         serializer = SongPostSerializer(queryset, many=True)
         if queryset.count() != 1:
-            return Response(
-                {"message": "Expected one song, found none or multiple"}, status=400
-            )
+            return Response({"message": "Expected one song, found none"}, status=400)
         serializer = SongPostSerializer(queryset.first())
         song_post = get_object_or_404(SongPost, pk=serializer.data.get("id"))
         sampled_audio = serializer.data.get("sampled_audio")

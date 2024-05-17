@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import playButton from "../assets/playbutton.svg";
-import pauseButton from "../assets/pausebutton.svg";
 import reloadButton from "../assets/reloadbutton.svg";
 import axios from "axios";
 import SearchBar from "../components/searchBar";
@@ -31,31 +30,37 @@ function MainPage() {
 
   function midnightExpiration() {
     const currentDate = new Date();
-    const timeUntilMidnight =
-      new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        currentDate.getDate() + 1,
+    const midnightUTC = new Date(
+      Date.UTC(
+        currentDate.getUTCFullYear(),
+        currentDate.getUTCMonth(),
+        currentDate.getUTCDate() + 1,
         0,
         0,
         0
-      ) - currentDate;
-    const expiresAtMidnight = new Date(
-      currentDate.getTime() + timeUntilMidnight
+      )
     );
-    return expiresAtMidnight;
+
+    return midnightUTC;
   }
 
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0);
+      const midnightUTC = new Date(
+        Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth(),
+          now.getUTCDate() + 1,
+          0,
+          0,
+          0
+        )
+      );
 
-      const difference = tomorrow - now;
+      const difference = midnightUTC - now;
       const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((difference / 1000 / 60) % 60);
+      const minutes = Math.floor((difference / (1000 * 60)) % 60);
       const seconds = Math.floor((difference / 1000) % 60);
 
       setCountdown(`${hours}:${minutes}:${seconds}`);
@@ -108,10 +113,7 @@ function MainPage() {
       setIsRepeat(false);
       setCorrect(true);
       handleSamplerButtonClick();
-      Cookies.set("tries", tryCount.toString(), {
-        expires: midnightExpiration(),
-      });
-      Cookies.set("correct", "true", { expires: midnightExpiration() });
+      handleTryCountUpdate(tryCount, "true");
     } else {
       setIsShaking(true);
       setTimeout(() => {
@@ -119,13 +121,18 @@ function MainPage() {
       }, 1000);
       triedSongs.push(userAnswer);
       setTriedSongs(triedSongs);
-      setTryCount(tryCount - 1);
       setIsRepeat(false);
-      Cookies.set("tries", (tryCount - 1).toString(), {
-        expires: midnightExpiration(),
-      });
-      Cookies.set("correct", "false", { expires: midnightExpiration() });
+      handleTryCountUpdate(tryCount - 1, "false");
     }
+    setUserAnswer("");
+  };
+
+  const handleTryCountUpdate = (tryCount, correct) => {
+    setTryCount(tryCount);
+    Cookies.set("tries", tryCount.toString(), {
+      expires: midnightExpiration(),
+    });
+    Cookies.set("correct", correct, { expires: midnightExpiration() });
   };
 
   const handleSamplerSearchResultsChange = (results) => {
@@ -209,7 +216,9 @@ function MainPage() {
             </span>
           )}
           {tryCount === 1 && !correct && !isRepeat && (
-            <span className="animate-pulse text-red-600  ">last chance.</span>
+            <span className="animate-pulse text-red-600  ">
+              no more hints, last chance.
+            </span>
           )}
           {tryCount === 2 && !correct && !isRepeat && (
             <span className="animate-pulse text-red-600  ">
@@ -239,20 +248,9 @@ function MainPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
             <SearchBar
               onSearchResultsChange={handleSamplerSearchResultsChange}
+              userAnswer={userAnswer}
             />
             <div className="grid grid-cols-2 gap-4">
-              <button
-                className={`bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out ${
-                  correct ? "bg-green-500" : "bg-opacity-50 bg-blue-500"
-                } 
-                ${isShaking ? "animate-shake-wrong  bg-red-500" : ""}
-                ${!userAnswer ? "pointer-events-none opacity-50" : ""} 
-                backdrop-filter backdrop-blur-lg rounded-xl shadow-lg w-full font-bold text-white`}
-                onClick={checkSong}
-                type="button"
-              >
-                Lock In
-              </button>
               <button
                 className="flex items-center justify-center bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg hover:bg-opacity-50 transition-colors duration-300"
                 type="button"
@@ -263,6 +261,26 @@ function MainPage() {
                 ) : (
                   <img src={playButton} alt="Play" />
                 )}
+              </button>
+              <button
+                className={`bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out ${
+                  correct ? "bg-green-500" : "bg-opacity-50 bg-blue-500"
+                } 
+                ${isShaking ? "animate-shake-wrong  bg-red-500" : ""}
+                ${
+                  !userAnswer && tryCount < 2
+                    ? "pointer-events-none opacity-50"
+                    : ""
+                } 
+                backdrop-filter backdrop-blur-lg rounded-xl shadow-lg w-full font-bold text-white`}
+                onClick={
+                  userAnswer || tryCount < 2
+                    ? checkSong
+                    : () => setTryCount(tryCount - 1)
+                }
+                type="button"
+              >
+                {userAnswer || tryCount < 2 ? "Lock In" : "Hint"}
               </button>
             </div>
           </div>
