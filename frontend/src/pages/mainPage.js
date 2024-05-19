@@ -205,7 +205,7 @@ function MainPage() {
     <div className="inset-0 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-xy min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center">
       <div className="container mx-auto px-4 text-center">
         <CustomModal isOpen={modalIsOpen} onRequestClose={closeModal} />
-        <header className="sm:text-6xl text-2xl font-bold mx-2 pt-2 text-gray-600	">
+        <header className="sm:text-6xl text-xl font-bold mx-2 pt-2 text-gray-600	">
           samplele
           <Link to="/admin">
             <button>.</button>
@@ -216,31 +216,33 @@ function MainPage() {
         </header>
         {tryCount < 4 ||
           (!correct && (
-            <h2 className="text-gray-600 font-semibold md:text-lg my-2">
-              listen to the sample to try and guess which song samples it.
+            <h2 className="text-gray-600 text-xs md:text-lg  my-2">
+              Guess the song by listening to it's sample.
             </h2>
           ))}
-        <h2 className="text-gray-600 text-2xl  sm:my-4 mb-2">
+        <h2 className="text-gray-600 text-sm md:text-lg sm:my-4 mb-2">
           {tryCount === 0 && !correct && !isRepeat && (
-            <span className="animate-pulse text-red-600  ">
+            <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
               unlucky, try again tomorrow
             </span>
           )}
           {tryCount === 1 && !correct && !isRepeat && (
-            <span className="animate-pulse text-red-600  ">
+            <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
               no more hints, last chance.
             </span>
           )}
           {tryCount === 2 && !correct && !isRepeat && (
-            <span className="animate-pulse text-red-600  ">
+            <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
               not great at this are you.
             </span>
           )}
           {tryCount === 3 && !correct && !isRepeat && (
-            <span className="animate-pulse text-red-600 ">try again.</span>
+            <span className="animate-puls text-sm md:text-lg  e text-red-600 ">
+              try again.
+            </span>
           )}
           {correct && !isRepeat && (
-            <span className="animate-pulse text-green-500 duration-2000">
+            <span className="animate-pulse text-green-500 text-sm md:text-lg   duration-2000">
               correct
             </span>
           )}
@@ -367,7 +369,7 @@ function MainPage() {
                 className={`text-2xl pb-2 ${
                   tryCount < 1 || correct
                     ? "animate-flash-green duration-2000"
-                    : "blur-sm"
+                    : "blur-md"
                 }`}
               >
                 {tryCount < 1 || correct ? (

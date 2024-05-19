@@ -22,7 +22,7 @@ function Loading() {
           samplele.
         </header>
         <h2 className="text-white text-xl mb-4">
-          listen to the sample and try and guess which rap song samples it.
+          Guess the song by listening to it's sample.
         </h2>
         <div className="container mx-auto 2xl:px-96 xl:px-64 lg:px-32 md:px-0">
           <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-8 rounded-3xl shadow-lg grid grid-cols-1 gap-4 flex flex-col md:flex-row justify-center items-center">
