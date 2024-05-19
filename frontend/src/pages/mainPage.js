@@ -28,18 +28,14 @@ function MainPage() {
   const [countdown, setCountdown] = useState("");
   const [jumbledAnswer, setJumbledAnswer] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(false);
 
   const storedTries = Cookies.get("tries");
   const storedCorrect = Cookies.get("correct");
 
   useEffect(() => {
-    // Check if the user has seen the instructions before
     const hasSeenInstructions = localStorage.getItem("hasSeenInstructions");
     if (!hasSeenInstructions) {
       setModalIsOpen(true);
-      setShowInstructions(true);
-      // Mark that the user has now seen the instructions
       localStorage.setItem("hasSeenInstructions", "true");
     }
   }, []);
@@ -64,29 +60,16 @@ function MainPage() {
         0
       )
     );
-
     return midnightUTC;
   }
 
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const midnightUTC = new Date(
-        Date.UTC(
-          now.getUTCFullYear(),
-          now.getUTCMonth(),
-          now.getUTCDate() + 1,
-          0,
-          0,
-          0
-        )
-      );
-
-      const difference = midnightUTC - now;
+      const difference = midnightExpiration() - now;
       const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((difference / (1000 * 60)) % 60);
       const seconds = Math.floor((difference / 1000) % 60);
-
       setCountdown(`${hours}:${minutes}:${seconds}`);
     }, 1000);
 

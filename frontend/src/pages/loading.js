@@ -9,7 +9,7 @@ function Loading() {
     if (dateElement) {
       dateElement.innerHTML = `<p>${currentUTCDate}</p>`;
     }
-  }, []); // Empty dependency array ensures this runs only once
+  }, []);
 
   return (
     <div className="bg-gradient-to-bl from-red-400 to-teal-500 via-#65a30d animate-gradient-xy min-h-screen lg:flex lg:justify-center lg:items-center  md:flex md:justify-center md:items-center">
