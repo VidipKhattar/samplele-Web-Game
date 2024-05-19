@@ -8,6 +8,8 @@ import SearchBar from "../components/searchBar";
 import Loading from "./loading";
 import NoSong from "./noSong";
 import { Analytics } from "@vercel/analytics/react";
+import CustomModal from "../components/popup";
+import infoFa from "../assets/icons8-info.svg";
 
 function MainPage() {
   const [gameInstance, setGameInstance] = useState({});
@@ -23,10 +25,32 @@ function MainPage() {
   const [correct, setCorrect] = useState(false);
   const [tryCount, setTryCount] = useState(4);
   const [triedSongs, setTriedSongs] = useState([]);
-  const storedTries = Cookies.get("tries");
-  const storedCorrect = Cookies.get("correct");
   const [countdown, setCountdown] = useState("");
   const [jumbledAnswer, setJumbledAnswer] = useState("");
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
+
+  const storedTries = Cookies.get("tries");
+  const storedCorrect = Cookies.get("correct");
+
+  useEffect(() => {
+    // Check if the user has seen the instructions before
+    const hasSeenInstructions = localStorage.getItem("hasSeenInstructions");
+    if (!hasSeenInstructions) {
+      setModalIsOpen(true);
+      setShowInstructions(true);
+      // Mark that the user has now seen the instructions
+      localStorage.setItem("hasSeenInstructions", "true");
+    }
+  }, []);
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
 
   function midnightExpiration() {
     const currentDate = new Date();
@@ -197,11 +221,15 @@ function MainPage() {
   return (
     <div className="inset-0 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-xy min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center">
       <div className="container mx-auto px-4 text-center">
+        <CustomModal isOpen={modalIsOpen} onRequestClose={closeModal} />
         <header className="sm:text-6xl text-2xl font-bold mx-2 pt-2 text-gray-600	">
           samplele
           <Link to="/admin">
             <button>.</button>
           </Link>
+          <button onClick={openModal}>
+            <img className="" src={infoFa}></img>
+          </button>
         </header>
         {tryCount < 4 ||
           (!correct && (
@@ -226,7 +254,7 @@ function MainPage() {
             </span>
           )}
           {tryCount === 3 && !correct && !isRepeat && (
-            <span className="animate-pulse text-red-600 ">wrong.</span>
+            <span className="animate-pulse text-red-600 ">try again.</span>
           )}
           {correct && !isRepeat && (
             <span className="animate-pulse text-green-500 duration-2000">
@@ -322,11 +350,11 @@ function MainPage() {
                     correct || tryCount < 1
                       ? ""
                       : tryCount < 2
-                      ? "blur-sm"
-                      : tryCount < 3
                       ? "blur-md"
+                      : tryCount < 3
+                      ? "blur-xl"
                       : tryCount < 4
-                      ? "blur-lg"
+                      ? "blur-2xl"
                       : "blur-2xl"
                   }`}
                 />
@@ -356,7 +384,7 @@ function MainPage() {
                 className={`text-2xl pb-2 ${
                   tryCount < 1 || correct
                     ? "animate-flash-green duration-2000"
-                    : "blur-md"
+                    : "blur-sm"
                 }`}
               >
                 {tryCount < 1 || correct ? (

@@ -1,8 +1,24 @@
-function loading() {
+import React, { useEffect } from "react";
+import logo from "../assets/android-chrome-512x512.png";
+
+function Loading() {
+  useEffect(() => {
+    const currentDate = new Date();
+    const currentUTCDate = currentDate.toDateString();
+    const dateElement = document.getElementById("utc-date");
+    if (dateElement) {
+      dateElement.innerHTML = `<p>${currentUTCDate}</p>`;
+    }
+  }, []); // Empty dependency array ensures this runs only once
+
   return (
     <div className="bg-gradient-to-bl from-red-400 to-teal-500 via-#65a30d animate-gradient-xy min-h-screen lg:flex lg:justify-center lg:items-center  md:flex md:justify-center md:items-center">
       <div className="container mx-auto px-4 text-center">
-        <header className="text-6xl font-bold mb-2 text-white">
+        <div className="flex justify-center">
+          <img className="w-32 h-32 py-4 " src={logo} alt="Logo" />
+        </div>
+
+        <header className="text-5xl font-bold mb-2 text-white">
           samplele.
         </header>
         <h2 className="text-white text-xl mb-4">
@@ -21,6 +37,8 @@ function loading() {
                 </span>
               </div>
             </div>
+            <p className="text-white" id="utc-date"></p>
+            <p className="text-white">Edited by Vidip Khattar</p>
           </div>
         </div>
       </div>
@@ -28,4 +46,4 @@ function loading() {
   );
 }
 
-export default loading;
+export default Loading;
