@@ -45,6 +45,7 @@ function AdminPage() {
       .then((response) => {
         const remainingPosts = songPosts.filter((post) => post.id !== id);
         setSongPosts(remainingPosts);
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error deleting song post:", error);
@@ -62,7 +63,9 @@ function AdminPage() {
         }`}
       >
         <td className="py-4 px-6">{post.post_date}</td>
-        <td className="py-4 px-6">{post.sampler_title}</td>
+        <td className="py-4 px-6">
+          {post.sampler_title + " - " + post.sampler_artist}
+        </td>
         <td className="py-4 px-6">
           {post.sampled_title + " - " + post.sampled_artist}
         </td>
