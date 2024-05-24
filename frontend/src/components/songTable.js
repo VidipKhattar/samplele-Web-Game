@@ -111,18 +111,14 @@ function AdminPage() {
       .get(`${baseUrl}/songposts/${id}`)
       .then((response) => {
         const { sampled_audio, sampler_audio, post_date } = response.data;
-        console.log(post_date);
-        console.log(date);
         const localDateString = new Date(
           date.getTime() - date.getTimezoneOffset() * 60000
         )
           .toISOString()
           .split("T")[0];
-        console.log(localDateString);
         response.data.sampled_audio = processUrl(sampled_audio);
         response.data.sampler_audio = processUrl(sampler_audio);
         response.data.post_date = localDateString;
-        console.log(response.data);
         repostSong(response.data, id);
         window.location.reload();
       })
@@ -183,7 +179,7 @@ function AdminPage() {
               openToDate={startDate} // Set the initial month
               filterDate={filterDisabledDates}
               dateFormat="yyyy-MM-dd"
-              placeholderText="Select a date"
+              placeholderText="date"
               className="grid-cols-2 w-full bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-1"
               popperProps={{
                 modifiers: [
@@ -228,7 +224,7 @@ function AdminPage() {
 
   return (
     <div className="container mx-auto px-4 text-center">
-      <div className="overflow-auto max-h-96">
+      <div className="overflow-auto ">
         <table className="table-auto w-full bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg text-center">
           <thead>
             <tr>
