@@ -133,8 +133,9 @@ class SongPostToday(APIView):
         sampler_audio = serializer.data.get("sampler_audio")
         if not sampled_audio.startswith("http"):
             song_post.sampled_audio = getPresignedURL(sampled_audio)
+        if not sampler_audio.startswith("http"):
             song_post.sampler_audio = getPresignedURL(sampler_audio)
-            song_post.save()
+        song_post.save()
         serializer = SongPostSerializer(song_post)
 
         return Response(serializer.data)
