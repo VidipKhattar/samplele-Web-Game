@@ -175,9 +175,9 @@ function AdminPage() {
             <DatePicker
               selected={selectedDates[post.id] || null}
               onChange={(date) => handleDateChange(post.id, date)}
-              minDate={new Date()}
+              //minDate={new Date()}
               openToDate={startDate} // Set the initial month
-              filterDate={filterDisabledDates}
+              //filterDate={filterDisabledDates}
               dateFormat="yyyy-MM-dd"
               placeholderText="date"
               className="grid-cols-2 w-full bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-1"
