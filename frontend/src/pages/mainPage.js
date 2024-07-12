@@ -382,7 +382,7 @@ function MainPage() {
                 className={`text-md pb-2 ${
                   tryCount < 2 || correct
                     ? "animate-flash-green duration-2000"
-                    : "blur-sm"
+                    : "blur-md"
                 }`}
               >
                 {gameInstance.sampler_album}
