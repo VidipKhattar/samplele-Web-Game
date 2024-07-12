@@ -391,7 +391,7 @@ function MainPage() {
                 className={`text-lg pb-2 ${
                   tryCount < 3 || correct
                     ? "animate-flash-green duration-2000"
-                    : "blur-sm"
+                    : "blur-md"
                 }`}
               >
                 {gameInstance.sampler_artist}
@@ -400,7 +400,7 @@ function MainPage() {
                 className={`text-sm pb-2 ${
                   tryCount < 4 || correct
                     ? "animate-flash-green duration-2000"
-                    : "blur-sm"
+                    : "blur-md"
                 }`}
               >
                 {gameInstance.sampler_year}
