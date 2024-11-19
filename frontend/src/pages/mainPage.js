@@ -93,6 +93,8 @@ function MainPage() {
         const foundSong = res.data;
         if (foundSong) {
           setGameInstance(foundSong);
+          console.log(foundSong.sampler_audio);
+          console.log(foundSong.sampled_audio);
           setOriginalSongAudio(new Audio(foundSong.sampled_audio));
           setSamplerSongAudio(new Audio(foundSong.sampler_audio));
           setTriedSongs([]);

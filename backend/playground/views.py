@@ -13,6 +13,54 @@ from pydub import AudioSegment
 import os
 from .models import SongPost
 from .serializers import SongPostSerializer
+from urllib.parse import urlparse, parse_qs, unquote
+import time
+
+
+from urllib.parse import urlparse, parse_qs, unquote
+import time
+
+
+def is_expired(s3_url):
+    parsed_url = urlparse(s3_url)
+    query_params = parse_qs(parsed_url.query)
+    expires = int(query_params.get("Expires", [0])[0])
+
+    current_time = time.time()
+    return current_time > expires
+
+
+def has_specific_access_key(s3_url, access_key="AKIA2UC27F2PI3KJ3E52"):
+    parsed_url = urlparse(s3_url)
+    query_params = parse_qs(parsed_url.query)
+    current_access_key = query_params.get("AWSAccessKeyId", [""])[0]
+    return current_access_key == access_key
+
+
+def getPresignedURLIfExpired(audio_url):
+    if "s3.amazonaws.com" in audio_url:
+        parsed_url = urlparse(audio_url)
+
+        # Decode the URL and remove leading '/'
+        key = unquote(parsed_url.path.lstrip("/"))
+
+        # Keep only the last segment of the path after removing all 'songs/' prefixes
+        key_parts = key.split("/")
+        key_filtered = [part for part in key_parts if part != "songs"]
+
+        # Join the filtered parts back into a single path
+        key = "/".join(key_filtered)
+
+        print(key)
+
+        # Check expiration or access key
+        if is_expired(audio_url) or has_specific_access_key(audio_url):
+            print("IS EXPIRED_________")
+            return getPresignedURL(key)
+        else:
+            print("NOTTTTTTT EXPIRED_________")
+
+    return audio_url
 
 
 def getPresignedURL(song_name):
@@ -29,9 +77,22 @@ def getPresignedURL(song_name):
             Params={"Bucket": bucket_name, "Key": key},
             ExpiresIn=48 * 3600,
         )
+        print("______________________________")
+        print(url)
+        print("______________________________")
         return url
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def getPresignedURLFromExpiredLink(expired_url):
+    # Parse the URL to get the key
+    parsed_url = urlparse(expired_url)
+    path = parsed_url.path
+    key = unquote(path.lstrip("/").split("/", 1)[-1])  # Gets "songs/..." portion
+
+    # Call getPresignedURL with extracted key
+    return getPresignedURL(key)
 
 
 def fetch_and_process_audio_from_youtube(youtube_url, sample_start_time):
@@ -133,8 +194,13 @@ class SongPostToday(APIView):
         sampler_audio = serializer.data.get("sampler_audio")
         if not sampled_audio.startswith("http"):
             song_post.sampled_audio = getPresignedURL(sampled_audio)
+        else:
+            song_post.sampled_audio = getPresignedURLIfExpired(sampled_audio)
+
         if not sampler_audio.startswith("http"):
             song_post.sampler_audio = getPresignedURL(sampler_audio)
+        else:
+            song_post.sampler_audio = getPresignedURLIfExpired(sampler_audio)
         song_post.save()
         serializer = SongPostSerializer(song_post)
 
