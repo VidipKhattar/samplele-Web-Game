@@ -1,0 +1,3 @@
+Samplele is a daily puzzle game designed for music enthusiasts. Each day, players are challenged to identify a song from a short audio sample, with up to four attempts to guess correctly. Each incorrect guess reveals additional hints, making it both challenging and fun.
+
+From a technical perspective, Samplele is built using React for the frontend, ensuring a dynamic and responsive user experience. The backend is powered by Django, providing a robust and scalable framework for handling game logic and user data. We utilized Tailwind CSS for sleek and modern styling, and our data is managed with PostgreSQL for reliable storage and retrieval. Additionally, we integrated various APIs to handle music samples and user interactions seamlessly. https://www.samplele.com/
