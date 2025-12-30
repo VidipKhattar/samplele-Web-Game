@@ -101,13 +101,18 @@ WSGI_APPLICATION = "sampler.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("PGDATABASE", "railway"),
-        "USER": os.environ.get("PGUSER", "postgres"),
-        "PASSWORD": os.environ.get("PGPASSWORD", "vjTmmZVzDMcUUvFzpGCTyBWMnzGMLrmL"),
-        "HOST": os.environ.get("PGHOST", "postgres.railway.internal"),
-        "PORT": os.environ.get("PGPORT", "5432"),
+        "NAME": "railway",
+        "USER": "postgres",
+        "PASSWORD": "vjTmmZVzDMcUUvFzpGCTyBWMnzGMLrmL",
+        "HOST": "interchange.proxy.rlwy.net",
+        "PORT": "54260",
+        "OPTIONS": {
+            "sslmode": "require",
+        },
+        "CONN_MAX_AGE": 600,
     }
 }
+
 
 """DATABASES = {
     "default": {
