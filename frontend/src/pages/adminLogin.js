@@ -16,11 +16,7 @@ function AdminPage() {
     sampler_artwork: "",
     sampled_artwork: "",
     sampler_audio: "",
-    sampler_audio_youtube_link: "",
-    sampler_audio_start_time: "",
     sampled_audio: "",
-    sampled_audio_youtube_link: "",
-    sampled_audio_start_time: "",
     sampler_year: "",
     sampled_year: "",
     post_date: "",
@@ -29,12 +25,6 @@ function AdminPage() {
   const [sampledSong, setSampledSong] = useState({});
   const [selectedDate, setSelectedDate] = useState(null);
   const [disabledDates, setDisabledDates] = useState([]);
-  const [ytVideo, setYTVideo] = useState("");
-  const [timeValue, setTimeValue] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [loadingSampler, setLoadingSampler] = useState(false);
-  const [ytVideoSampler, setYTVideoSampler] = useState("");
-  const [timeValueSampler, setTimeValueSampler] = useState("");
 
   useEffect(() => {
     axios
@@ -59,101 +49,6 @@ function AdminPage() {
     return !disabledDates.some(
       (disabledDate) => disabledDate.toDateString() === date.toDateString()
     );
-  };
-
-  useEffect(() => {
-    if (ytVideo && timeValue) {
-      setLoading(true);
-      processAndUpdateFormData(ytVideo, timeValue)
-        .then((res) => {
-          setSampledSong((prevSampledSong) => ({
-            ...prevSampledSong,
-            previewUrl: res.presigned_url, // Assuming the property name is previewUrl
-          }));
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            sampled_title: formData.sampled_title
-              ? prevFormData.sampled_title
-              : res.title,
-            sampled_audio: res.title,
-          }));
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error processing and updating form data:", error);
-          setLoading(false);
-        });
-    }
-  }, [ytVideo, timeValue]);
-
-  useEffect(() => {
-    if (ytVideoSampler && timeValueSampler) {
-      setLoadingSampler(true);
-      processAndUpdateFormData(ytVideoSampler, timeValueSampler)
-        .then((res) => {
-          setSamplerSong((prevSamplerSong) => ({
-            ...prevSamplerSong,
-            previewUrl: res.presigned_url,
-          }));
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            sampler_audio: res.title,
-          }));
-          setLoadingSampler(false);
-        })
-        .catch((error) => {
-          console.error("Error processing and updating form data:", error);
-          setLoadingSampler(false);
-        });
-    }
-  }, [ytVideoSampler, timeValueSampler]);
-
-  const processAndUpdateFormData = async (ytVideoVar, timeValueVar) => {
-    try {
-      const post_response = await axios.post(
-        process.env.NODE_ENV === "production"
-          ? process.env.REACT_APP_API_BASE_URL_PROD + "/youtube/"
-          : process.env.REACT_APP_API_BASE_URL_DEV + "/youtube/",
-        { ytVideoVar, timeValueVar }
-      );
-
-      const { title } = post_response.data;
-      const ending = "/youtube/?title=" + encodeURIComponent(title);
-      const get_response = await axios.get(
-        process.env.NODE_ENV === "production"
-          ? process.env.REACT_APP_API_BASE_URL_PROD + ending
-          : process.env.REACT_APP_API_BASE_URL_DEV + ending
-      );
-      return { presigned_url: get_response.data.presigned_url, title: title };
-    } catch (error) {
-      console.error("Error converting YouTube video:", error);
-    }
-  };
-
-  const handleYTChange = async (event) => {
-    const { name, value } = event.target;
-    if (name.includes("youtubeSong")) {
-      const youtubeUrlPattern =
-        /^(http(s)?:\/\/)?((w){3}.)?youtu(be|.be)?(\.com)?\/.+/;
-      if (youtubeUrlPattern.test(value)) {
-        if (name == "youtubeSong") {
-          setYTVideo(value);
-        } else if (name == "youtubeSongSampler") {
-          setYTVideoSampler(value);
-        }
-      }
-    } else if (name.includes("time")) {
-      const timePattern = /^\d+:\d{2}$/;
-      if (timePattern.test(value)) {
-        const [minutes, seconds] = value.split(":").map(Number);
-        const totalTimeInSeconds = minutes * 60 + seconds;
-        if (name == "time") {
-          setTimeValue(totalTimeInSeconds);
-        } else if (name == "timeSampler") {
-          setTimeValueSampler(totalTimeInSeconds);
-        }
-      }
-    }
   };
 
   const handleSamplerSearchResultsChange = (results) => {
@@ -192,8 +87,6 @@ function AdminPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setLoadingSampler(true);
 
     const requiredFields = [
       "sampler_title",
@@ -206,8 +99,6 @@ function AdminPage() {
 
     if (missingFields.length > 0) {
       alert(`The following fields are required: ${missingFields.join(", ")}`);
-      setLoading(false);
-      setLoadingSampler(false);
       return;
     }
 
@@ -218,13 +109,9 @@ function AdminPage() {
           : `${process.env.REACT_APP_API_BASE_URL_DEV}/songposts/`,
         formData
       );
-      setLoading(false);
-      setLoadingSampler(false);
       window.location.reload();
     } catch (error) {
       alert(error + " date could be taken");
-      setLoading(false);
-      setLoadingSampler(false);
     }
   };
 
@@ -272,20 +159,6 @@ function AdminPage() {
                     " - " +
                     new Date(sampledSong.releaseDate).toLocaleDateString()}
                 </li>
-                <input
-                  placeholder="Youtube song"
-                  onChange={handleYTChange}
-                  name="youtubeSong"
-                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-1 m-2"
-                  disabled={loading || process.env.NODE_ENV === "production"}
-                ></input>
-                <input
-                  placeholder="Time"
-                  onChange={handleYTChange}
-                  name="time"
-                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-1 m-2"
-                  disabled={loading || process.env.NODE_ENV === "production"}
-                ></input>
               </ul>
             </div>
 
@@ -309,24 +182,6 @@ function AdminPage() {
                     " - " +
                     new Date(samplerSong.releaseDate).toLocaleDateString()}
                 </li>
-                <input
-                  placeholder="Youtube song"
-                  onChange={handleYTChange}
-                  name="youtubeSongSampler"
-                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-1 m-2"
-                  disabled={
-                    loadingSampler || process.env.NODE_ENV === "production"
-                  }
-                ></input>
-                <input
-                  placeholder="Time"
-                  onChange={handleYTChange}
-                  name="timeSampler"
-                  className="text-gray-600 w-5/6 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg py-1 m-2"
-                  disabled={
-                    loadingSampler || process.env.NODE_ENV === "production"
-                  }
-                ></input>
               </ul>
             </div>
 
@@ -354,16 +209,8 @@ function AdminPage() {
               className="bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out bg-opacity-50 backdrop-filter backdrop-blur-lg p-2 rounded-xl shadow-lg mb-10 w-full font-bold text-white"
               type="button"
               onClick={handleSubmit}
-              disabled={loading || loadingSampler}
             >
-              {loading || loadingSampler ? (
-                <div
-                  className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
-                  role="status"
-                ></div>
-              ) : (
-                "Add samplele"
-              )}
+              Add sample
             </button>
           </div>
         </div>

@@ -204,83 +204,84 @@ function MainPage() {
   }
 
   return (
-    <div className="inset-0 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-xy min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center">
-      <div className="container mx-auto px-4 text-center">
-        <CustomModal isOpen={modalIsOpen} onRequestClose={closeModal} />
-        <header className="sm:text-6xl text-xl font-bold mx-2 pt-2 text-gray-600	">
-          samplele
-          <Link to="/admin">
-            <button>.</button>
-          </Link>
-          <button onClick={openModal}>
-            <img className="" src={infoFa}></img>
-          </button>
-        </header>
-        {tryCount < 4 ||
-          (!correct && (
-            <h2 className="text-gray-600 text-xs md:text-lg  my-2">
-              Guess the song by listening to it's sample.
-            </h2>
-          ))}
-        <h2 className="text-gray-600 text-sm md:text-lg sm:my-4 mb-2">
-          {tryCount === 0 && !correct && !isRepeat && (
-            <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
-              unlucky, try again tomorrow
-            </span>
-          )}
-          {tryCount === 1 && !correct && !isRepeat && (
-            <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
-              no more hints, last chance.
-            </span>
-          )}
-          {tryCount === 2 && !correct && !isRepeat && (
-            <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
-              not great at this are you.
-            </span>
-          )}
-          {tryCount === 3 && !correct && !isRepeat && (
-            <span className="animate-puls text-sm md:text-lg  e text-red-600 ">
-              try again.
-            </span>
-          )}
-          {correct && !isRepeat && (
-            <span className="animate-pulse text-green-500 text-sm md:text-lg   duration-2000">
-              correct
-            </span>
-          )}
-          {isRepeat && (
-            <span className="animate-flash-green text-red-600	duration-2000">
-              already tried.
-            </span>
-          )}
-        </h2>
+    <div className="fixed bottom-0 w-full text-center text-gray-600 text-xs pb-2 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-xy ">
+      <div className="inset-0 min-h-screen lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center">
+        <div className="container mx-auto px-4 text-center">
+          <CustomModal isOpen={modalIsOpen} onRequestClose={closeModal} />
+          <header className="sm:text-6xl text-xl font-bold mx-2 pt-2 text-gray-600	">
+            samplele
+            <Link to="/admin">
+              <button>.</button>
+            </Link>
+            <button onClick={openModal}>
+              <img className="" src={infoFa}></img>
+            </button>
+          </header>
+          {tryCount < 4 ||
+            (!correct && (
+              <h2 className="text-gray-600 text-xs md:text-lg  my-2">
+                Guess the song by listening to it's sample.
+              </h2>
+            ))}
+          <h2 className="text-gray-600 text-sm md:text-lg sm:my-4 mb-2">
+            {tryCount === 0 && !correct && !isRepeat && (
+              <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
+                unlucky, try again tomorrow
+              </span>
+            )}
+            {tryCount === 1 && !correct && !isRepeat && (
+              <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
+                no more hints, last chance.
+              </span>
+            )}
+            {tryCount === 2 && !correct && !isRepeat && (
+              <span className="animate-pulse text-sm md:text-lg   text-red-600  ">
+                not great at this are you.
+              </span>
+            )}
+            {tryCount === 3 && !correct && !isRepeat && (
+              <span className="animate-puls text-sm md:text-lg  e text-red-600 ">
+                try again.
+              </span>
+            )}
+            {correct && !isRepeat && (
+              <span className="animate-pulse text-green-500 text-sm md:text-lg   duration-2000">
+                correct
+              </span>
+            )}
+            {isRepeat && (
+              <span className="animate-flash-green text-red-600	duration-2000">
+                already tried.
+              </span>
+            )}
+          </h2>
 
-        <div
-          className={`container mx-auto 2xl:px-96 xl:px-64 lg:px-32 md:px-0  ${
-            correct || tryCount < 1 ? "pointer-events-none opacity-50" : ""
-          }`}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
-            <SearchBar
-              onSearchResultsChange={handleSamplerSearchResultsChange}
-              userAnswer={userAnswer}
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                className="flex items-center justify-center bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg hover:bg-opacity-50 transition-colors duration-300"
-                type="button"
-                onClick={handleOriginalButtonClick}
-              >
-                {isPlayingOriginal ? (
-                  <img src={reloadButton} alt="Reload" />
-                ) : (
-                  <img src={playButton} alt="Play" />
-                )}
-              </button>
-              <button
-                className={`bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out ${
-                  correct ? "bg-green-500" : "bg-opacity-50 bg-blue-500"
-                } 
+          <div
+            className={`container mx-auto 2xl:px-96 xl:px-64 lg:px-32 md:px-0  ${
+              correct || tryCount < 1 ? "pointer-events-none opacity-50" : ""
+            }`}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
+              <SearchBar
+                onSearchResultsChange={handleSamplerSearchResultsChange}
+                userAnswer={userAnswer}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  className="flex items-center justify-center bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg hover:bg-opacity-50 transition-colors duration-300"
+                  type="button"
+                  onClick={handleOriginalButtonClick}
+                >
+                  {isPlayingOriginal ? (
+                    <img src={reloadButton} alt="Reload" />
+                  ) : (
+                    <img src={playButton} alt="Play" />
+                  )}
+                </button>
+                <button
+                  className={`bg-blue-600 hover:bg-opacity-80 transition-colors duration-300 ease-in-out ${
+                    correct ? "bg-green-500" : "bg-opacity-50 bg-blue-500"
+                  } 
                 ${isShaking ? "animate-shake-wrong  bg-red-500" : ""}
                 ${
                   !userAnswer && tryCount < 2
@@ -288,184 +289,202 @@ function MainPage() {
                     : ""
                 } 
                 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg w-full font-bold text-white`}
-                onClick={
-                  userAnswer || tryCount < 2
-                    ? checkSong
-                    : () => setTryCount(tryCount - 1)
-                }
-                type="button"
-              >
-                {userAnswer || tryCount < 2 ? "Lock In" : "Hint"}
-              </button>
+                  onClick={
+                    userAnswer || tryCount < 2
+                      ? checkSong
+                      : () => setTryCount(tryCount - 1)
+                  }
+                  type="button"
+                >
+                  {userAnswer || tryCount < 2 ? "Lock In" : "Hint"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex justify-center items-center my-3">
-          <div className="flex">
-            <div
-              className={`w-3 h-3 rounded-full mx-1 bg-gray-600	 transition-opacity ${
-                tryCount < 1 ? "opacity-50" : ""
-              }`}
-            ></div>
-            <div
-              className={`w-3 h-3 rounded-full mx-1 bg-gray-600	 transition-opacity ${
-                tryCount < 2 ? "opacity-50" : ""
-              }`}
-            ></div>
-            <div
-              className={`w-3 h-3 rounded-full mx-1 bg-gray-600	 transition-opacity ${
-                tryCount < 3 ? "opacity-50" : ""
-              }`}
-            ></div>
-            <div
-              className={`w-3 h-3 rounded-full mx-1 bg-gray-600	 transition-opacity ${
-                tryCount < 4 ? "opacity-50" : ""
-              }`}
-            ></div>
+          <div className="flex justify-center items-center my-3">
+            <div className="flex">
+              <div
+                className={`w-3 h-3 rounded-full mx-1 bg-gray-600	 transition-opacity ${
+                  tryCount < 1 ? "opacity-50" : ""
+                }`}
+              ></div>
+              <div
+                className={`w-3 h-3 rounded-full mx-1 bg-gray-600	 transition-opacity ${
+                  tryCount < 2 ? "opacity-50" : ""
+                }`}
+              ></div>
+              <div
+                className={`w-3 h-3 rounded-full mx-1 bg-gray-600	 transition-opacity ${
+                  tryCount < 3 ? "opacity-50" : ""
+                }`}
+              ></div>
+              <div
+                className={`w-3 h-3 rounded-full mx-1 bg-gray-600	 transition-opacity ${
+                  tryCount < 4 ? "opacity-50" : ""
+                }`}
+              ></div>
+            </div>
           </div>
-        </div>
 
-        <div className="container mx-auto 2xl:px-96 xl:px-64 lg:px-32 md:px-0">
-          <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-4 rounded-3xl shadow-lg grid grid-cols-1 gap-4 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 min-[520px]:grid-cols-2 flex flex-col md:flex-row justify-center items-center">
-            <div className="flex justify-center items-center md:block sm:block lg:col-span-1 md:col-span-1 sm:col-span-1 ">
-              <div className="relative bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-3xl shadow-lg w-48 h-48 flex justify-center items-center">
-                <img
-                  src={gameInstance.sampler_artwork}
-                  alt="Sampler Artwork"
-                  className={`object-cover w-full h-full rounded-3xl ${
-                    correct || tryCount < 1
-                      ? ""
-                      : tryCount < 2
-                      ? "blur-md"
-                      : tryCount < 3
-                      ? "blur-xl"
-                      : tryCount < 4
-                      ? "blur-2xl"
-                      : "blur-2xl"
+          <div className="container mx-auto 2xl:px-96 xl:px-64 lg:px-32 md:px-0">
+            <div className="bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-4 rounded-3xl shadow-lg grid grid-cols-1 gap-4 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-3 min-[520px]:grid-cols-2 flex flex-col md:flex-row justify-center items-center">
+              <div className="flex justify-center items-center md:block sm:block lg:col-span-1 md:col-span-1 sm:col-span-1 ">
+                <div className="relative bg-opacity-25 backdrop-filter backdrop-blur-lg rounded-3xl shadow-lg w-48 h-48 flex justify-center items-center">
+                  <img
+                    src={gameInstance.sampler_artwork}
+                    alt="Sampler Artwork"
+                    className={`object-cover w-full h-full rounded-3xl ${
+                      correct || tryCount < 1
+                        ? ""
+                        : tryCount < 2
+                        ? "blur-md"
+                        : tryCount < 3
+                        ? "blur-xl"
+                        : tryCount < 4
+                        ? "blur-2xl"
+                        : "blur-2xl"
+                    }`}
+                  />
+                  {(correct || tryCount === 0) && (
+                    <button
+                      className="absolute bg-white bg-opacity-5 backdrop-filter backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-55 duration-300 w-16 h-16 flex justify-center items-center"
+                      style={{
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                      }}
+                      type="button"
+                      onClick={handleSamplerButtonClick}
+                    >
+                      {isPlayingSampler ? (
+                        <img
+                          src={reloadButton}
+                          alt="Pause"
+                          className="w-8 h-8"
+                        />
+                      ) : (
+                        <img src={playButton} alt="Play" className="w-8 h-8" />
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="font-bold text-center text-gray-600 sm:pl-4 min-[520px]:text-left lg:col-span-2 md:col-span-2 sm:col-span-2 ">
+                <p
+                  className={`text-2xl pb-2 ${
+                    tryCount < 1 || correct
+                      ? "animate-flash-green duration-2000"
+                      : "blur-md"
                   }`}
-                />
-                {(correct || tryCount === 0) && (
+                >
+                  {tryCount < 1 || correct ? (
+                    <span>{gameInstance.sampler_title}</span>
+                  ) : (
+                    <span>{jumbledAnswer}</span>
+                  )}
+                </p>
+                <p
+                  className={`text-md pb-2 ${
+                    tryCount < 2 || correct
+                      ? "animate-flash-green duration-2000"
+                      : "blur-md"
+                  }`}
+                >
+                  {gameInstance.sampler_album}
+                </p>
+                <p
+                  className={`text-lg pb-2 ${
+                    tryCount < 3 || correct
+                      ? "animate-flash-green duration-2000"
+                      : "blur-md"
+                  }`}
+                >
+                  {gameInstance.sampler_artist}
+                </p>
+                <p
+                  className={`text-sm pb-2 ${
+                    tryCount < 4 || correct
+                      ? "animate-flash-green duration-2000"
+                      : "blur-md"
+                  }`}
+                >
+                  {gameInstance.sampler_year}
+                </p>
+              </div>
+            </div>
+            <div
+              className={`${
+                correct || tryCount < 1
+                  ? "opacity-100 transition-opacity duration-500 ease-in"
+                  : "opacity-0"
+              }`}
+            >
+              <div
+                className={`grid grid-cols-4 gap-4 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-4 my-4 rounded-3xl shadow-lg justify-center items-center`}
+              >
+                <div className="col-span-1 flex justify-center items-center">
                   <button
                     className="absolute bg-white bg-opacity-5 backdrop-filter backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-55 duration-300 w-16 h-16 flex justify-center items-center"
-                    style={{
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                    }}
                     type="button"
-                    onClick={handleSamplerButtonClick}
+                    onClick={handleOriginalButtonClick}
                   >
-                    {isPlayingSampler ? (
+                    {isPlayingOriginal ? (
                       <img src={reloadButton} alt="Pause" className="w-8 h-8" />
                     ) : (
                       <img src={playButton} alt="Play" className="w-8 h-8" />
                     )}
                   </button>
-                )}
+                </div>
+                <div className="col-span-3 font-bold text-center text-gray-600 min-[520px]:text-left">
+                  <p
+                    className={`text-3xl pb-2 ${
+                      tryCount < 1 || correct ? "" : "blur-sm"
+                    }`}
+                  >
+                    {gameInstance.sampled_title}
+                  </p>
+                  <p
+                    className={`text-xl pb-2 ${
+                      tryCount < 3 || correct ? "" : "blur-sm"
+                    }`}
+                  >
+                    {gameInstance.sampled_artist}
+                  </p>
+                  <p
+                    className={`text-lg pb-2 ${
+                      tryCount < 4 || correct ? "" : "blur-sm"
+                    }`}
+                  >
+                    {gameInstance.sampled_year}
+                  </p>
+                </div>
               </div>
-            </div>
-
-            <div className="font-bold text-center text-gray-600 sm:pl-4 min-[520px]:text-left lg:col-span-2 md:col-span-2 sm:col-span-2 ">
-              <p
-                className={`text-2xl pb-2 ${
-                  tryCount < 1 || correct
-                    ? "animate-flash-green duration-2000"
-                    : "blur-md"
-                }`}
-              >
-                {tryCount < 1 || correct ? (
-                  <span>{gameInstance.sampler_title}</span>
-                ) : (
-                  <span>{jumbledAnswer}</span>
-                )}
+              <p className="animate-flash-green text-gray-600 font-bold text-lg ">
+                come back tomorrow for a new song 👀
               </p>
-              <p
-                className={`text-md pb-2 ${
-                  tryCount < 2 || correct
-                    ? "animate-flash-green duration-2000"
-                    : "blur-md"
-                }`}
-              >
-                {gameInstance.sampler_album}
-              </p>
-              <p
-                className={`text-lg pb-2 ${
-                  tryCount < 3 || correct
-                    ? "animate-flash-green duration-2000"
-                    : "blur-md"
-                }`}
-              >
-                {gameInstance.sampler_artist}
-              </p>
-              <p
-                className={`text-sm pb-2 ${
-                  tryCount < 4 || correct
-                    ? "animate-flash-green duration-2000"
-                    : "blur-md"
-                }`}
-              >
-                {gameInstance.sampler_year}
+              <p className="text-gray-600 font-bold text-lg animate-flash-green  ">
+                in {countdown}
               </p>
             </div>
-          </div>
-          <div
-            className={`${
-              correct || tryCount < 1
-                ? "opacity-100 transition-opacity duration-500 ease-in"
-                : "opacity-0"
-            }`}
-          >
-            <div
-              className={`grid grid-cols-4 gap-4 bg-white bg-opacity-25 backdrop-filter backdrop-blur-lg p-4 my-4 rounded-3xl shadow-lg justify-center items-center`}
-            >
-              <div className="col-span-1 flex justify-center items-center">
-                <button
-                  className="absolute bg-white bg-opacity-5 backdrop-filter backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-55 duration-300 w-16 h-16 flex justify-center items-center"
-                  type="button"
-                  onClick={handleOriginalButtonClick}
-                >
-                  {isPlayingOriginal ? (
-                    <img src={reloadButton} alt="Pause" className="w-8 h-8" />
-                  ) : (
-                    <img src={playButton} alt="Play" className="w-8 h-8" />
-                  )}
-                </button>
-              </div>
-              <div className="col-span-3 font-bold text-center text-gray-600 min-[520px]:text-left">
-                <p
-                  className={`text-3xl pb-2 ${
-                    tryCount < 1 || correct ? "" : "blur-sm"
-                  }`}
-                >
-                  {gameInstance.sampled_title}
-                </p>
-                <p
-                  className={`text-xl pb-2 ${
-                    tryCount < 3 || correct ? "" : "blur-sm"
-                  }`}
-                >
-                  {gameInstance.sampled_artist}
-                </p>
-                <p
-                  className={`text-lg pb-2 ${
-                    tryCount < 4 || correct ? "" : "blur-sm"
-                  }`}
-                >
-                  {gameInstance.sampled_year}
-                </p>
-              </div>
-            </div>
-            <p className="animate-flash-green text-gray-600 font-bold text-lg ">
-              come back tomorrow for a new song 👀
-            </p>
-            <p className="text-gray-600 font-bold text-lg animate-flash-green  ">
-              in {countdown}
-            </p>
           </div>
         </div>
+        <Analytics />
       </div>
-      <Analytics />
+      <footer className="text-white py-4 text-center">
+        <p>
+          Created by Vidip Khattar |{" "}
+          <a
+            href="https://github.com/VidipKhattar/fifa_predictor"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            LinkedIn
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }

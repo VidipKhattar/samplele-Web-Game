@@ -18,7 +18,6 @@ class SongPostSerializer(serializers.ModelSerializer):
             "sampler_audio",
             "sampled_audio",
             "sampler_year",
-            "sampler_year",
             "sampled_year",
             "post_date",
         ]

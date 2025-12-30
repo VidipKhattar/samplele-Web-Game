@@ -13,5 +13,4 @@ urlpatterns = [
         views.SongPostRetrieveUpdateDestroy.as_view(),
         name="songpost-view-destroy",
     ),
-    path("youtube/", views.YoutubeAPIView.as_view(), name="convert_to_mp3"),
 ]

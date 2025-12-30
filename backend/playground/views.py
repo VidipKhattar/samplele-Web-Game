@@ -7,16 +7,10 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.conf import settings
-from pytube import YouTube
 import boto3
-from pydub import AudioSegment
 import os
 from .models import SongPost
 from .serializers import SongPostSerializer
-from urllib.parse import urlparse, parse_qs, unquote
-import time
-
-
 from urllib.parse import urlparse, parse_qs, unquote
 import time
 
@@ -28,39 +22,6 @@ def is_expired(s3_url):
 
     current_time = time.time()
     return current_time > expires
-
-
-def has_specific_access_key(s3_url, access_key="AKIA2UC27F2PI3KJ3E52"):
-    parsed_url = urlparse(s3_url)
-    query_params = parse_qs(parsed_url.query)
-    current_access_key = query_params.get("AWSAccessKeyId", [""])[0]
-    return current_access_key == access_key
-
-
-def getPresignedURLIfExpired(audio_url):
-    if "s3.amazonaws.com" in audio_url:
-        parsed_url = urlparse(audio_url)
-
-        # Decode the URL and remove leading '/'
-        key = unquote(parsed_url.path.lstrip("/"))
-
-        # Keep only the last segment of the path after removing all 'songs/' prefixes
-        key_parts = key.split("/")
-        key_filtered = [part for part in key_parts if part != "songs"]
-
-        # Join the filtered parts back into a single path
-        key = "/".join(key_filtered)
-
-        print(key)
-
-        # Check expiration or access key
-        if is_expired(audio_url) or has_specific_access_key(audio_url):
-            print("IS EXPIRED_________")
-            return getPresignedURL(key)
-        else:
-            print("NOTTTTTTT EXPIRED_________")
-
-    return audio_url
 
 
 def getPresignedURL(song_name):
@@ -83,68 +44,6 @@ def getPresignedURL(song_name):
         return url
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-def getPresignedURLFromExpiredLink(expired_url):
-    # Parse the URL to get the key
-    parsed_url = urlparse(expired_url)
-    path = parsed_url.path
-    key = unquote(path.lstrip("/").split("/", 1)[-1])  # Gets "songs/..." portion
-
-    # Call getPresignedURL with extracted key
-    return getPresignedURL(key)
-
-
-def fetch_and_process_audio_from_youtube(youtube_url, sample_start_time):
-    yt = YouTube(youtube_url)
-    video_title = yt.title
-    filename = f"{video_title}.mp3"
-    folder_name = "songs"
-    audio_path = (
-        yt.streams.filter(only_audio=True)
-        .first()
-        .download(output_path=folder_name, filename=filename)
-    )
-    audio = AudioSegment.from_file(audio_path)
-    start_time = sample_start_time * 1000
-    end_time = (sample_start_time + 30) * 1000
-    modified_audio = audio[start_time:end_time]
-    modified_audio_path = os.path.join(folder_name, filename)
-    modified_audio.export(modified_audio_path, format="mp3")
-
-    s3 = boto3.client(
-        "s3",
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    )
-    bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-    object_key = f"{folder_name}/{filename}"
-
-    with open(modified_audio_path, "rb") as file:
-        s3.upload_fileobj(file, bucket_name, object_key)
-    # os.remove(modified_audio_path)
-    return filename
-
-
-class YoutubeAPIView(APIView):
-    def post(self, request):
-        youtube_url = request.data.get("ytVideoVar")
-        sample_start_time = request.data.get("timeValueVar")
-        try:
-            audio_data = fetch_and_process_audio_from_youtube(
-                youtube_url, sample_start_time
-            )
-            return JsonResponse(
-                {"title": audio_data},
-                status=status.HTTP_201_CREATED,
-            )
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    def get(self, request):
-        song_name = request.GET.get("title")
-        presigned_url = getPresignedURL(song_name)
-        return JsonResponse({"presigned_url": presigned_url})
 
 
 class LoginInfoAPIView(APIView):
@@ -194,13 +93,10 @@ class SongPostToday(APIView):
         sampler_audio = serializer.data.get("sampler_audio")
         if not sampled_audio.startswith("http"):
             song_post.sampled_audio = getPresignedURL(sampled_audio)
-        else:
-            song_post.sampled_audio = getPresignedURLIfExpired(sampled_audio)
 
         if not sampler_audio.startswith("http"):
             song_post.sampler_audio = getPresignedURL(sampler_audio)
-        else:
-            song_post.sampler_audio = getPresignedURLIfExpired(sampler_audio)
+
         song_post.save()
         serializer = SongPostSerializer(song_post)
 
