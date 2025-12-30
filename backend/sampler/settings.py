@@ -101,11 +101,11 @@ WSGI_APPLICATION = "sampler.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "railway",
-        "USER": "postgres",
-        "PASSWORD": "vjTmmZVzDMcUUvFzpGCTyBWMnzGMLrmL",
-        "HOST": "postgres.railway.internal",
-        "PORT": "5432",
+        "NAME": os.environ.get("PGDATABASE", "railway"),
+        "USER": os.environ.get("PGUSER", "postgres"),
+        "PASSWORD": os.environ.get("PGPASSWORD", "vjTmmZVzDMcUUvFzpGCTyBWMnzGMLrmL"),
+        "HOST": os.environ.get("PGHOST", "postgres.railway.internal"),
+        "PORT": os.environ.get("PGPORT", "5432"),
     }
 }
 
