@@ -204,8 +204,8 @@ function MainPage() {
   }
 
   return (
-    <div className="inset-0 min-h-screen fixed bottom-0 w-full text-center text-gray-600 text-xs pb-2 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-xy ">
-      <div className="lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center">
+    <div className="w-full min-h-screen text-center text-gray-600 text-xs pb-2 bg-gradient-to-bl from-blue-400 to-green-500 via-orange-500 animate-gradient-xy">
+      <div className="lg:justify-center lg:items-center sm:flex sm:justify-center sm:items-center flex flex-col">
         <div className="container mx-auto px-4 text-center">
           <CustomModal isOpen={modalIsOpen} onRequestClose={closeModal} />
           <header className="sm:text-6xl text-xl font-bold mx-2 pt-2 text-gray-600	">
@@ -472,7 +472,7 @@ function MainPage() {
         </div>
         <Analytics />
       </div>
-      <footer className="text-white py-4 text-center">
+      <footer className="w-full text-white py-4 text-center">
         <p>
           Created by Vidip Khattar |{" "}
           <a
